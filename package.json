@@ -4,7 +4,8 @@
   "main": "parse.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "more-context": "node more-context/index.js"
   },
   "keywords": [],
   "author": "",

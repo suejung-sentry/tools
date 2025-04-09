@@ -1,0 +1,742 @@
+{
+  "id": "6382411120",
+  "shareId": null,
+  "shortId": "SEER-S9",
+  "title": "AssertionError",
+  "culprit": "seer.automation.codegen.relevant_warnings_step.relevant_warnings_task",
+  "permalink": "https://sentry.sentry.io/issues/6382411120/",
+  "logger": null,
+  "level": "error",
+  "status": "resolved",
+  "statusDetails": {},
+  "substatus": null,
+  "isPublic": false,
+  "platform": "python",
+  "project": {
+    "id": "6178942",
+    "name": "seer",
+    "slug": "seer",
+    "platform": "python-flask"
+  },
+  "type": "error",
+  "metadata": {
+    "value": "",
+    "type": "AssertionError",
+    "filename": "seer/automation/codegen/relevant_warnings_component.py",
+    "function": "_fetch_issues_for_pr_file",
+    "in_app_frame_mix": "mixed",
+    "sdk": {
+      "name": "sentry.python.flask",
+      "name_normalized": "sentry.python"
+    },
+    "severity": 0.41,
+    "severity_reason": "ml",
+    "initial_priority": 75,
+    "title": null
+  },
+  "numComments": 0,
+  "assignedTo": {
+    "email": "kush.dubey@sentry.io",
+    "type": "user",
+    "id": "3520650",
+    "name": "Kush Dubey"
+  },
+  "isBookmarked": false,
+  "isSubscribed": false,
+  "subscriptionDetails": null,
+  "hasSeen": true,
+  "annotations": [],
+  "issueType": "error",
+  "issueCategory": "error",
+  "priority": "high",
+  "priorityLockedAt": null,
+  "isUnhandled": true,
+  "count": "5",
+  "userCount": 0,
+  "firstSeen": "2025-03-10T21:46:31.623625Z",
+  "lastSeen": "2025-03-10T23:02:06Z",
+  "firstRelease": {
+    "id": 1374625399,
+    "version": "9cf62a3f6cf0751918f8d3e55b555389fe520190",
+    "status": "open",
+    "shortVersion": "9cf62a3f6cf0751918f8d3e55b555389fe520190",
+    "versionInfo": {
+      "package": null,
+      "version": {
+        "raw": "9cf62a3f6cf0751918f8d3e55b555389fe520190"
+      },
+      "description": "9cf62a3f6cf0",
+      "buildHash": "9cf62a3f6cf0751918f8d3e55b555389fe520190"
+    },
+    "ref": null,
+    "url": null,
+    "dateReleased": "2025-03-10T21:33:05.207722Z",
+    "dateCreated": "2025-03-10T21:24:59.257047Z",
+    "data": {},
+    "newGroups": 2,
+    "owner": null,
+    "commitCount": 0,
+    "lastCommit": null,
+    "deployCount": 1,
+    "lastDeploy": {
+      "id": "68006022",
+      "environment": "production",
+      "dateStarted": null,
+      "dateFinished": "2025-03-10T21:33:04.879396Z",
+      "name": null,
+      "url": null
+    },
+    "authors": [],
+    "projects": [
+      {
+        "id": 6178942,
+        "slug": "seer",
+        "name": "seer",
+        "newGroups": 2,
+        "platform": "python-flask",
+        "platforms": [
+          "other",
+          "python"
+        ],
+        "hasHealthData": false
+      }
+    ],
+    "firstEvent": "2025-03-10T21:26:40Z",
+    "lastEvent": "2025-03-10T23:17:49Z",
+    "currentProjectMeta": {},
+    "userAgent": null
+  },
+  "lastRelease": {
+    "id": 1374625399,
+    "version": "9cf62a3f6cf0751918f8d3e55b555389fe520190",
+    "status": "open",
+    "shortVersion": "9cf62a3f6cf0751918f8d3e55b555389fe520190",
+    "versionInfo": {
+      "package": null,
+      "version": {
+        "raw": "9cf62a3f6cf0751918f8d3e55b555389fe520190"
+      },
+      "description": "9cf62a3f6cf0",
+      "buildHash": "9cf62a3f6cf0751918f8d3e55b555389fe520190"
+    },
+    "ref": null,
+    "url": null,
+    "dateReleased": "2025-03-10T21:33:05.207722Z",
+    "dateCreated": "2025-03-10T21:24:59.257047Z",
+    "data": {},
+    "newGroups": 2,
+    "owner": null,
+    "commitCount": 0,
+    "lastCommit": null,
+    "deployCount": 1,
+    "lastDeploy": {
+      "id": "68006022",
+      "environment": "production",
+      "dateStarted": null,
+      "dateFinished": "2025-03-10T21:33:04.879396Z",
+      "name": null,
+      "url": null
+    },
+    "authors": [],
+    "projects": [
+      {
+        "id": 6178942,
+        "slug": "seer",
+        "name": "seer",
+        "newGroups": 2,
+        "platform": "python-flask",
+        "platforms": [
+          "other",
+          "python"
+        ],
+        "hasHealthData": false
+      }
+    ],
+    "firstEvent": "2025-03-10T21:26:40Z",
+    "lastEvent": "2025-03-10T23:17:49Z",
+    "currentProjectMeta": {},
+    "userAgent": null
+  },
+  "tags": [
+    {
+      "key": "celery_task_id",
+      "name": "Celery Task Id",
+      "totalValues": 5
+    },
+    {
+      "key": "environment",
+      "name": "Environment",
+      "totalValues": 5
+    },
+    {
+      "key": "handled",
+      "name": "Handled",
+      "totalValues": 5
+    },
+    {
+      "key": "level",
+      "name": "Level",
+      "totalValues": 5
+    },
+    {
+      "key": "mechanism",
+      "name": "Mechanism",
+      "totalValues": 5
+    },
+    {
+      "key": "release",
+      "name": "Release",
+      "totalValues": 5
+    },
+    {
+      "key": "runtime",
+      "name": "Runtime",
+      "totalValues": 5
+    },
+    {
+      "key": "runtime.name",
+      "name": "Runtime.Name",
+      "totalValues": 5
+    },
+    {
+      "key": "server_name",
+      "name": "Server",
+      "totalValues": 5
+    },
+    {
+      "key": "transaction",
+      "name": "Transaction",
+      "totalValues": 5
+    }
+  ],
+  "activity": [
+    {
+      "id": "4447432569",
+      "user": {
+        "id": "3520650",
+        "name": "Kush Dubey",
+        "username": "b6572c8f68a04d5f988204c74dfe69f4",
+        "email": "kush.dubey@sentry.io",
+        "avatarUrl": "https://gravatar.com/avatar/0b893c117bf0857f8ce8ad1abb67768bf9c3902e6d3ae0ae239f2c4320d6f3a1?s=32&d=mm",
+        "isActive": true,
+        "hasPasswordAuth": false,
+        "isManaged": false,
+        "dateJoined": "2024-12-16T20:02:49.967602Z",
+        "lastLogin": "2025-04-08T17:20:59.291874Z",
+        "has2fa": false,
+        "lastActive": "2025-04-09T02:24:19.559438Z",
+        "isSuperuser": true,
+        "isStaff": true,
+        "experiments": {},
+        "emails": [
+          {
+            "id": "3688497",
+            "email": "kush.dubey@sentry.io",
+            "is_verified": true
+          }
+        ],
+        "avatar": {
+          "avatarType": "letter_avatar",
+          "avatarUuid": null,
+          "avatarUrl": null
+        }
+      },
+      "type": "set_resolved",
+      "data": {},
+      "dateCreated": "2025-03-11T01:11:19.605547Z"
+    },
+    {
+      "id": "4446796723",
+      "user": {
+        "id": "3520650",
+        "name": "Kush Dubey",
+        "username": "b6572c8f68a04d5f988204c74dfe69f4",
+        "email": "kush.dubey@sentry.io",
+        "avatarUrl": "https://gravatar.com/avatar/0b893c117bf0857f8ce8ad1abb67768bf9c3902e6d3ae0ae239f2c4320d6f3a1?s=32&d=mm",
+        "isActive": true,
+        "hasPasswordAuth": false,
+        "isManaged": false,
+        "dateJoined": "2024-12-16T20:02:49.967602Z",
+        "lastLogin": "2025-04-08T17:20:59.291874Z",
+        "has2fa": false,
+        "lastActive": "2025-04-09T02:24:19.559438Z",
+        "isSuperuser": true,
+        "isStaff": true,
+        "experiments": {},
+        "emails": [
+          {
+            "id": "3688497",
+            "email": "kush.dubey@sentry.io",
+            "is_verified": true
+          }
+        ],
+        "avatar": {
+          "avatarType": "letter_avatar",
+          "avatarUuid": null,
+          "avatarUrl": null
+        }
+      },
+      "type": "assigned",
+      "data": {
+        "assignee": "3520650",
+        "assigneeEmail": "kush.dubey@sentry.io",
+        "assigneeName": "Kush Dubey",
+        "assigneeType": "user"
+      },
+      "dateCreated": "2025-03-10T22:15:14.184241Z"
+    },
+    {
+      "id": "4446714287",
+      "user": null,
+      "type": "assigned",
+      "data": {
+        "assignee": "4506232210784256",
+        "assigneeEmail": null,
+        "assigneeName": "ml-ai",
+        "assigneeType": "team",
+        "integration": "codeowners",
+        "rule": "codeowners:* #ml-ai"
+      },
+      "dateCreated": "2025-03-10T21:55:09.312171Z"
+    },
+    {
+      "id": "0",
+      "user": null,
+      "type": "first_seen",
+      "data": {
+        "priority": "high"
+      },
+      "dateCreated": "2025-03-10T21:46:31.623625Z"
+    }
+  ],
+  "openPeriods": [
+    {
+      "start": "2025-03-10T21:46:31.623625Z",
+      "end": "2025-03-11T01:11:19.605547Z",
+      "duration": "12287.981922",
+      "isOpen": false,
+      "lastChecked": "2025-03-11T01:11:19.605547Z"
+    }
+  ],
+  "seenBy": [
+    {
+      "id": "700930",
+      "name": "tillman.elser@sentry.io",
+      "username": "16b2e4174bca45bcafc21f6c11e16ad1",
+      "email": "tillman.elser@sentry.io",
+      "avatarUrl": "https://gravatar.com/avatar/111f7e042a915b00ba529206613f4dcd9f1aa2598de82a335ef2900c4948566b?s=32&d=mm",
+      "isActive": true,
+      "hasPasswordAuth": false,
+      "isManaged": false,
+      "dateJoined": "2020-06-12T23:59:32.545009Z",
+      "lastLogin": "2025-04-04T00:10:07.866467Z",
+      "has2fa": true,
+      "lastActive": "2025-04-09T05:13:02.914270Z",
+      "isSuperuser": true,
+      "isStaff": true,
+      "experiments": {},
+      "emails": [
+        {
+          "id": "798295",
+          "email": "tillman.elser@sentry.io",
+          "is_verified": true
+        }
+      ],
+      "avatar": {
+        "avatarType": "letter_avatar",
+        "avatarUuid": null,
+        "avatarUrl": null
+      },
+      "lastSeen": "2025-03-27T05:43:10.649272Z"
+    },
+    {
+      "id": "3305862",
+      "name": "suejung.shin@sentry.io",
+      "username": "f0983303cefe4cbaa38c5d4f23104ec3",
+      "email": "suejung.shin@sentry.io",
+      "avatarUrl": "https://gravatar.com/avatar/2d38875b153fa9a161b6f2f6c3e7b34f798a45f535af267cd68e0ad51a9d69f6?s=32&d=mm",
+      "isActive": true,
+      "hasPasswordAuth": false,
+      "isManaged": false,
+      "dateJoined": "2024-07-16T16:10:54.673196Z",
+      "lastLogin": "2025-04-03T15:18:51.026048Z",
+      "has2fa": true,
+      "lastActive": "2025-04-09T05:21:42.849103Z",
+      "isSuperuser": true,
+      "isStaff": true,
+      "experiments": {},
+      "emails": [
+        {
+          "id": "3462588",
+          "email": "suejung.shin@sentry.io",
+          "is_verified": true
+        }
+      ],
+      "options": {
+        "theme": "light",
+        "language": "en",
+        "stacktraceOrder": -1,
+        "defaultIssueEvent": "recommended",
+        "timezone": "UTC",
+        "clock24Hours": false,
+        "prefersIssueDetailsStreamlinedUI": true,
+        "prefersSpecializedProjectOverview": {},
+        "prefersStackedNavigation": false,
+        "prefersChonkUI": false,
+        "quickStartDisplay": {
+          "4505246230970368": 1,
+          "4504767952388096": 2
+        }
+      },
+      "flags": {
+        "newsletter_consent_prompt": false
+      },
+      "avatar": {
+        "avatarType": "letter_avatar",
+        "avatarUuid": null,
+        "avatarUrl": null
+      },
+      "identities": [
+        {
+          "id": "800431",
+          "name": "00ugrdjheoQ9bKW1Q697",
+          "organization": {
+            "slug": "sentry",
+            "name": "Sentry"
+          },
+          "provider": {
+            "id": "okta",
+            "name": "Okta"
+          },
+          "dateSynced": "2025-04-08T13:24:15.834769Z",
+          "dateVerified": "2025-04-03T15:18:50.888636Z"
+        },
+        {
+          "id": "818085",
+          "name": "00ugrdjheoQ9bKW1Q697",
+          "organization": {
+            "slug": "sentry-st",
+            "name": "Sentry ST"
+          },
+          "provider": {
+            "id": "okta",
+            "name": "Okta"
+          },
+          "dateSynced": "2025-04-08T11:36:29.072872Z",
+          "dateVerified": "2025-02-12T22:19:17.076802Z"
+        },
+        {
+          "id": "733135",
+          "name": "175655418",
+          "organization": {
+            "slug": "codecov",
+            "name": "Codecov"
+          },
+          "provider": {
+            "id": "github",
+            "name": "GitHub"
+          },
+          "dateSynced": "2025-04-08T16:53:29.530384Z",
+          "dateVerified": "2025-04-08T16:53:29.530384Z"
+        }
+      ],
+      "lastSeen": "2025-03-11T20:07:40.090014Z"
+    },
+    {
+      "id": "3520650",
+      "name": "Kush Dubey",
+      "username": "b6572c8f68a04d5f988204c74dfe69f4",
+      "email": "kush.dubey@sentry.io",
+      "avatarUrl": "https://gravatar.com/avatar/0b893c117bf0857f8ce8ad1abb67768bf9c3902e6d3ae0ae239f2c4320d6f3a1?s=32&d=mm",
+      "isActive": true,
+      "hasPasswordAuth": false,
+      "isManaged": false,
+      "dateJoined": "2024-12-16T20:02:49.967602Z",
+      "lastLogin": "2025-04-08T17:20:59.291874Z",
+      "has2fa": false,
+      "lastActive": "2025-04-09T02:24:19.559438Z",
+      "isSuperuser": true,
+      "isStaff": true,
+      "experiments": {},
+      "emails": [
+        {
+          "id": "3688497",
+          "email": "kush.dubey@sentry.io",
+          "is_verified": true
+        }
+      ],
+      "avatar": {
+        "avatarType": "letter_avatar",
+        "avatarUuid": null,
+        "avatarUrl": null
+      },
+      "lastSeen": "2025-03-10T21:59:37.139548Z"
+    }
+  ],
+  "pluginActions": [],
+  "pluginIssues": [],
+  "pluginContexts": [],
+  "userReportCount": 0,
+  "stats": {
+    "24h": [
+      [
+        1744088400,
+        0
+      ],
+      [
+        1744092000,
+        0
+      ],
+      [
+        1744095600,
+        0
+      ],
+      [
+        1744099200,
+        0
+      ],
+      [
+        1744102800,
+        0
+      ],
+      [
+        1744106400,
+        0
+      ],
+      [
+        1744110000,
+        0
+      ],
+      [
+        1744113600,
+        0
+      ],
+      [
+        1744117200,
+        0
+      ],
+      [
+        1744120800,
+        0
+      ],
+      [
+        1744124400,
+        0
+      ],
+      [
+        1744128000,
+        0
+      ],
+      [
+        1744131600,
+        0
+      ],
+      [
+        1744135200,
+        0
+      ],
+      [
+        1744138800,
+        0
+      ],
+      [
+        1744142400,
+        0
+      ],
+      [
+        1744146000,
+        0
+      ],
+      [
+        1744149600,
+        0
+      ],
+      [
+        1744153200,
+        0
+      ],
+      [
+        1744156800,
+        0
+      ],
+      [
+        1744160400,
+        0
+      ],
+      [
+        1744164000,
+        0
+      ],
+      [
+        1744167600,
+        0
+      ],
+      [
+        1744171200,
+        0
+      ],
+      [
+        1744174800,
+        0
+      ]
+    ],
+    "30d": [
+      [
+        1741564800,
+        5
+      ],
+      [
+        1741651200,
+        0
+      ],
+      [
+        1741737600,
+        0
+      ],
+      [
+        1741824000,
+        0
+      ],
+      [
+        1741910400,
+        0
+      ],
+      [
+        1741996800,
+        0
+      ],
+      [
+        1742083200,
+        0
+      ],
+      [
+        1742169600,
+        0
+      ],
+      [
+        1742256000,
+        0
+      ],
+      [
+        1742342400,
+        0
+      ],
+      [
+        1742428800,
+        0
+      ],
+      [
+        1742515200,
+        0
+      ],
+      [
+        1742601600,
+        0
+      ],
+      [
+        1742688000,
+        0
+      ],
+      [
+        1742774400,
+        0
+      ],
+      [
+        1742860800,
+        0
+      ],
+      [
+        1742947200,
+        0
+      ],
+      [
+        1743033600,
+        0
+      ],
+      [
+        1743120000,
+        0
+      ],
+      [
+        1743206400,
+        0
+      ],
+      [
+        1743292800,
+        0
+      ],
+      [
+        1743379200,
+        0
+      ],
+      [
+        1743465600,
+        0
+      ],
+      [
+        1743552000,
+        0
+      ],
+      [
+        1743638400,
+        0
+      ],
+      [
+        1743724800,
+        0
+      ],
+      [
+        1743811200,
+        0
+      ],
+      [
+        1743897600,
+        0
+      ],
+      [
+        1743984000,
+        0
+      ],
+      [
+        1744070400,
+        0
+      ],
+      [
+        1744156800,
+        0
+      ]
+    ]
+  },
+  "participants": [
+    {
+      "id": "3520650",
+      "name": "Kush Dubey",
+      "username": "b6572c8f68a04d5f988204c74dfe69f4",
+      "email": "kush.dubey@sentry.io",
+      "avatarUrl": "https://gravatar.com/avatar/0b893c117bf0857f8ce8ad1abb67768bf9c3902e6d3ae0ae239f2c4320d6f3a1?s=32&d=mm",
+      "isActive": true,
+      "hasPasswordAuth": false,
+      "isManaged": false,
+      "dateJoined": "2024-12-16T20:02:49.967602Z",
+      "lastLogin": "2025-04-08T17:20:59.291874Z",
+      "has2fa": false,
+      "lastActive": "2025-04-09T02:24:19.559438Z",
+      "isSuperuser": true,
+      "isStaff": true,
+      "experiments": {},
+      "emails": [
+        {
+          "id": "3688497",
+          "email": "kush.dubey@sentry.io",
+          "is_verified": true
+        }
+      ],
+      "avatar": {
+        "avatarType": "letter_avatar",
+        "avatarUuid": null,
+        "avatarUrl": null
+      },
+      "type": "user"
+    }
+  ]
+}

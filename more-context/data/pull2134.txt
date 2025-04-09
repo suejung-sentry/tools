@@ -1,0 +1,121 @@
+diff --git a/src/seer/automation/codegen/relevant_warnings_component.py b/src/seer/automation/codegen/relevant_warnings_component.py
+index 0651803fd..67ad3a8a5 100644
+--- a/src/seer/automation/codegen/relevant_warnings_component.py
++++ b/src/seer/automation/codegen/relevant_warnings_component.py
+@@ -1,7 +1,7 @@
+ import logging
+ import textwrap
+ from pathlib import Path
+-from typing import Any, Iterable
++from typing import Any
+ 
+ import numpy as np
+ from cachetools import LRUCache, cached  # type: ignore[import-untyped]
+@@ -66,7 +66,7 @@ def _left_truncated_paths(path: Path, max_num_paths: int = 2) -> list[str]:
+         return result
+ 
+     def _does_warning_match_a_target_file(
+-        self, warning: StaticAnalysisWarning, target_filenames: Iterable[str]
++        self, warning: StaticAnalysisWarning, target_filenames: set[str]
+     ) -> bool:
+         filename = warning.encoded_location.split(":")[0]
+         path = Path(filename)
+@@ -83,15 +83,7 @@ def _does_warning_match_a_target_file(
+             path.as_posix(),
+             *self._left_truncated_paths(path, max_num_paths=2),
+         }
+-        possible_matches_from_targets = {
+-            *target_filenames,
+-            *{
+-                truncated
+-                for filename in target_filenames
+-                for truncated in self._left_truncated_paths(Path(filename), max_num_paths=1)
+-            },
+-        }
+-        matches = possible_matches_from_warning & possible_matches_from_targets
++        matches = possible_matches_from_warning & target_filenames
+         if matches:
+             self.logger.info(f"{warning.encoded_location=} {matches=}")
+         return bool(matches)
+@@ -99,10 +91,18 @@ def _does_warning_match_a_target_file(
+     @observe(name="Codegen - Relevant Warnings - Filter Warnings Component")
+     @ai_track(description="Codegen - Relevant Warnings - Filter Warnings Component")
+     def invoke(self, request: FilterWarningsRequest) -> FilterWarningsOutput:
++        left_truncated_target_filenames = {
++            left_truncated
++            for filename in request.target_filenames
++            for left_truncated in self._left_truncated_paths(Path(filename), max_num_paths=1)
++        }
++        possible_matches_from_targets = (
++            set(request.target_filenames) | left_truncated_target_filenames
++        )
+         warnings = [
+             warning
+             for warning in request.warnings
+-            if self._does_warning_match_a_target_file(warning, request.target_filenames)
++            if self._does_warning_match_a_target_file(warning, possible_matches_from_targets)
+         ]
+         return FilterWarningsOutput(warnings=warnings)
+ 
+@@ -138,6 +138,8 @@ def _fetch_issues_for_pr_file(
+             extra={"file": pr_file.filename},
+         )
+         return []
++    if not pr_filename_to_issues:
++        return []
+     assert list(pr_filename_to_issues.keys()) == [pr_file.filename]
+     return list(pr_filename_to_issues.values())[0]
+ 
+diff --git a/tests/automation/codegen/test_relevant_warnings.py b/tests/automation/codegen/test_relevant_warnings.py
+index 0d6f6589a..fdc2f73d1 100644
+--- a/tests/automation/codegen/test_relevant_warnings.py
++++ b/tests/automation/codegen/test_relevant_warnings.py
+@@ -57,7 +57,7 @@ def test_bad_encoded_locations_cause_errors(self, component: FilterWarningsCompo
+     class _TestInvokeTestCase(BaseModel):
+         id: str
+ 
+-        target_files: list[str]
++        target_filenames: list[str]
+         "These files are relative to the repo root b/c they're from the GitHub API."
+ 
+         encoded_locations_with_matches: list[str]
+@@ -70,7 +70,7 @@ class _TestInvokeTestCase(BaseModel):
+         [
+             _TestInvokeTestCase(
+                 id="getsentry/seer",
+-                target_files=["src/seer/anomaly_detection/detectors/mp_boxcox_scorer.py"],
++                target_filenames=["src/seer/anomaly_detection/detectors/mp_boxcox_scorer.py"],
+                 encoded_locations_with_matches=[
+                     "src/seer/anomaly_detection/detectors/mp_boxcox_scorer.py:233:234",
+                     "seer/anomaly_detection/detectors/mp_boxcox_scorer.py:233:234",
+@@ -85,7 +85,7 @@ class _TestInvokeTestCase(BaseModel):
+             ),
+             _TestInvokeTestCase(
+                 id="codecov/overwatch",
+-                target_files=[
++                target_filenames=[
+                     "app/tools/seer_signature/generate_signature.py",
+                     "processor/tests/services/test_envelope.py",
+                     "app/app/Livewire/Actions/Logout.php",
+@@ -116,7 +116,7 @@ def test_invoke(self, test_case: _TestInvokeTestCase, component: FilterWarningsC
+ 
+         request = FilterWarningsRequest(
+             warnings=warnings,
+-            target_filenames=test_case.target_files,
++            target_filenames=test_case.target_filenames,
+             repo_full_name="getsentry/seer",
+         )
+         output: FilterWarningsOutput = component.invoke(request)
+@@ -184,6 +184,12 @@ def test_invoke_filters_files(
+         output: CodeFetchIssuesOutput = component.invoke(request)
+         assert output.filename_to_issues == {filename: [] for filename in pr_filename_to_issues}
+         assert mock_rpc_client_call.call_count == 2
++        request.organization_id = 1  # reset
++
++        mock_rpc_client_call.return_value = {}
++        request.organization_id = 3
++        output: CodeFetchIssuesOutput = component.invoke(request)
++        assert output.filename_to_issues == {filename: [] for filename in pr_filename_to_issues}
+ 
+ 
+ _T = TypeVar("_T")

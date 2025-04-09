@@ -1,0 +1,103 @@
+{
+  "transactions": [
+    {
+      "event_id": "d6a9aa4fcbd64c8da5ff6527537ad861",
+      "span_id": "91980d3aa13ecab2",
+      "timestamp": 1741647725.157,
+      "transaction": "app.codegen_relevant_warnings_endpoint",
+      "transaction.duration": 125,
+      "transaction.op": "http.server",
+      "project_id": 6178942,
+      "project_slug": "seer",
+      "parent_span_id": "1ef49de5127147ca",
+      "parent_event_id": null,
+      "generation": -1,
+      "errors": [
+        {
+          "event_id": "ddbdfaca5f794c838af5867659bde44b",
+          "issue_id": 6241351582,
+          "span": "91980d3aa13ecab2",
+          "project_id": 6178942,
+          "project_slug": "seer",
+          "title": "No auth header found for request to http://overwatch-seer-proxy.codecov.dev:8081/v1/automation/codegen/relevant-warnings",
+          "level": "info",
+          "message": "No auth header found for request to http://overwatch-seer-proxy.codecov.dev:8081/v1/automation/codegen/relevant-warnings app.codegen_relevant_warnings_endpoint",
+          "timestamp": 1741647725,
+          "event_type": "error",
+          "generation": 0
+        }
+      ],
+      "performance_issues": [],
+      "start_timestamp": 1741647725.032,
+      "profile_id": "a5249b7e709e43fd88b1c44ab5a7ffa0",
+      "profiler_id": null,
+      "sdk_name": "sentry.python.flask",
+      "measurements": {},
+      "children": [
+        {
+          "event_id": "dc38e1aab9ae47e5ba7e8a76a7223486",
+          "span_id": "9df0c8180487e648",
+          "timestamp": 1741647726.369,
+          "transaction": "seer.automation.codegen.relevant_warnings_step.relevant_warnings_task",
+          "transaction.duration": 1202,
+          "transaction.op": "queue.task.celery",
+          "project_id": 6178942,
+          "project_slug": "seer",
+          "parent_span_id": "981ddc0cdec1b8b7",
+          "parent_event_id": "d6a9aa4fcbd64c8da5ff6527537ad861",
+          "generation": -1,
+          "errors": [
+            {
+              "event_id": "33188b4738ae42e880a3fed5df69f7de",
+              "issue_id": 6382490855,
+              "span": "9f3698951d504d87",
+              "project_id": 6178942,
+              "project_slug": "seer",
+              "title": "[run_id=9398] [RelevantWarningsStep] Failed to run 143994188871222582518326968407154862158. Error:",
+              "level": "error",
+              "message": "[run_id=9398] [RelevantWarningsStep] Failed to run 143994188871222582518326968407154862158. Error:  seer.automation.codegen.relevant_warnings_step.relevant_warnings_task",
+              "timestamp": 1741647726,
+              "event_type": "error",
+              "generation": 0
+            },
+            {
+              "event_id": "b45455a464d3485490d891d732b565ff",
+              "issue_id": 6382411120,
+              "span": "b0494380d4040c21",
+              "project_id": 6178942,
+              "project_slug": "seer",
+              "title": "AssertionError",
+              "level": "error",
+              "message": "AssertionError seer/automation/codegen/relevant_warnings_component.py _fetch_issues_for_pr_file seer.automation.codegen.relevant_warnings_step.relevant_warnings_task",
+              "timestamp": 1741647726,
+              "event_type": "error",
+              "generation": 0
+            }
+          ],
+          "performance_issues": [],
+          "start_timestamp": 1741647725.166,
+          "profile_id": "ca6cab87987d463999c79657099a803b",
+          "profiler_id": null,
+          "sdk_name": "sentry.python.flask",
+          "measurements": {},
+          "children": []
+        }
+      ]
+    }
+  ],
+  "orphan_errors": [
+    {
+      "event_id": "bb6dba1b81d94defa0b4e2a6e55d49a7",
+      "issue_id": 6341405671,
+      "span": "ba256a29100b3bef",
+      "project_id": 1,
+      "project_slug": "sentry",
+      "title": "No projects",
+      "level": "error",
+      "message": "No projects /api/0/internal/seer-rpc/{method_name}/",
+      "timestamp": 1741647726,
+      "event_type": "error",
+      "generation": 0
+    }
+  ]
+}

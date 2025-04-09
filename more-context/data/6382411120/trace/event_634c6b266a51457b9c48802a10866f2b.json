@@ -1,0 +1,2269 @@
+{
+  "id": "634c6b266a51457b9c48802a10866f2b",
+  "groupID": "6382411120",
+  "eventID": "634c6b266a51457b9c48802a10866f2b",
+  "projectID": "6178942",
+  "size": 37163,
+  "entries": [
+    {
+      "data": {
+        "values": [
+          {
+            "type": "AssertionError",
+            "value": null,
+            "mechanism": {
+              "type": "ai_monitoring",
+              "handled": false
+            },
+            "threadId": null,
+            "module": null,
+            "stacktrace": {
+              "frames": [
+                {
+                  "filename": "seer/automation/codegen/relevant_warnings_step.py",
+                  "absPath": "/app/src/seer/automation/codegen/relevant_warnings_step.py",
+                  "module": "seer.automation.codegen.relevant_warnings_step",
+                  "package": null,
+                  "platform": null,
+                  "instructionAddr": null,
+                  "symbolAddr": null,
+                  "function": "_invoke",
+                  "rawFunction": null,
+                  "symbol": null,
+                  "context": [
+                    [
+                      148,
+                      "        # 3. Fetch issues related to the PR."
+                    ],
+                    [
+                      149,
+                      "        fetch_issues_component = FetchIssuesComponent(self.context)"
+                    ],
+                    [
+                      150,
+                      "        fetch_issues_request = CodeFetchIssuesRequest("
+                    ],
+                    [
+                      151,
+                      "            organization_id=self.request.organization_id, pr_files=pr_files"
+                    ],
+                    [
+                      152,
+                      "        )"
+                    ],
+                    [
+                      153,
+                      "        fetch_issues_output: CodeFetchIssuesOutput = fetch_issues_component.invoke("
+                    ],
+                    [
+                      154,
+                      "            fetch_issues_request"
+                    ],
+                    [
+                      155,
+                      "        )"
+                    ],
+                    [
+                      156,
+                      ""
+                    ],
+                    [
+                      157,
+                      "        # 4. Limit the number of warning-issue associations we analyze to the top"
+                    ],
+                    [
+                      158,
+                      "        #    max_num_associations."
+                    ]
+                  ],
+                  "lineNo": 153,
+                  "colNo": null,
+                  "inApp": true,
+                  "trust": null,
+                  "errors": null,
+                  "lock": null,
+                  "sourceLink": null,
+                  "vars": {
+                    "fetch_issues_component": "<seer.automation.codegen.relevant_warnings_component.FetchIssuesComponent object at 0x7d0431101310>",
+                    "fetch_issues_request": "[Filtered]",
+                    "filter_warnings_component": "<seer.automation.codegen.relevant_warnings_component.FilterWarningsComponent object at 0x7d043736e610>",
+                    "filter_warnings_output": "FilterWarningsOutput(warnings=[StaticAnalysisWarning(id=95597, code='class.notFound', message='Call to static method warning() on an unknown class Log.', encoded_location='app/Services/SentryService.php:55', rule_id=1295, rule=None)])",
+                    "filter_warnings_request": "FilterWarningsRequest(warnings=[StaticAnalysisWarning(id=95579, code='class.notFound', message='PHPDoc tag @mixin contains unknown class Eloquent.', encoded_location='app/Models/Role.php:18', rule_id=1295, rule=None), StaticAnalysisWarning(id=95580, code='class.notFound', message='Parameter $results of method App\\\\Jobs\\\\Notifier::__construct() has invalid type App\\\\Jobs\\\\NotificationSegmentDTO.', encoded_location='app/Jobs/Notifier.php:39', rule_id=1295, rule=None), StaticAnalysisWarning(id=95581, code='class.notFound', message='Property App\\\\Jobs\\\\Notifier::$results ..."
+                  }
+                },
+                {
+                  "filename": "langfuse/decorators/langfuse_decorator.py",
+                  "absPath": "/usr/local/lib/python3.11/dist-packages/langfuse/decorators/langfuse_decorator.py",
+                  "module": "langfuse.decorators.langfuse_decorator",
+                  "package": null,
+                  "platform": null,
+                  "instructionAddr": null,
+                  "symbolAddr": null,
+                  "function": "sync_wrapper",
+                  "rawFunction": null,
+                  "symbol": null,
+                  "context": [
+                    [
+                      251,
+                      "            result = None"
+                    ],
+                    [
+                      252,
+                      ""
+                    ],
+                    [
+                      253,
+                      "            try:"
+                    ],
+                    [
+                      254,
+                      "                result = func(*args, **kwargs)"
+                    ],
+                    [
+                      255,
+                      "            except Exception as e:"
+                    ],
+                    [
+                      256,
+                      "                self._handle_exception(observation, e)"
+                    ],
+                    [
+                      257,
+                      "            finally:"
+                    ],
+                    [
+                      258,
+                      "                result = self._finalize_call("
+                    ],
+                    [
+                      259,
+                      "                    observation, result, capture_output, transform_to_string"
+                    ],
+                    [
+                      260,
+                      "                )"
+                    ],
+                    [
+                      261,
+                      ""
+                    ]
+                  ],
+                  "lineNo": 256,
+                  "colNo": null,
+                  "inApp": false,
+                  "trust": null,
+                  "errors": null,
+                  "lock": null,
+                  "sourceLink": null,
+                  "vars": {
+                    "args": [
+                      "<seer.automation.codegen.relevant_warnings_component.FetchIssuesComponent object at 0x7d0431101310>",
+                      "[Filtered]"
+                    ],
+                    "as_type": "None",
+                    "capture_input": "True",
+                    "capture_output": "True",
+                    "func": "<function FetchIssuesComponent.invoke at 0x7d028b8dbc40>",
+                    "kwargs": {},
+                    "name": "'Codegen - Relevant Warnings - Fetch Issues Component'",
+                    "observation": "<langfuse.client.StatefulSpanClient object at 0x7d043134e6d0>",
+                    "result": "None",
+                    "self": "<langfuse.decorators.langfuse_decorator.LangfuseDecorator object at 0x7d0296b0e010>"
+                  }
+                },
+                {
+                  "filename": "langfuse/decorators/langfuse_decorator.py",
+                  "absPath": "/usr/local/lib/python3.11/dist-packages/langfuse/decorators/langfuse_decorator.py",
+                  "module": "langfuse.decorators.langfuse_decorator",
+                  "package": null,
+                  "platform": null,
+                  "instructionAddr": null,
+                  "symbolAddr": null,
+                  "function": "_handle_exception",
+                  "rawFunction": null,
+                  "symbol": null,
+                  "context": [
+                    [
+                      515,
+                      "    ):"
+                    ],
+                    [
+                      516,
+                      "        if observation:"
+                    ],
+                    [
+                      517,
+                      "            _observation_params_context.get()[observation.id].update("
+                    ],
+                    [
+                      518,
+                      "                level=\"ERROR\", status_message=str(e)"
+                    ],
+                    [
+                      519,
+                      "            )"
+                    ],
+                    [
+                      520,
+                      "        raise e"
+                    ],
+                    [
+                      521,
+                      ""
+                    ],
+                    [
+                      522,
+                      "    def _wrap_sync_generator_result("
+                    ],
+                    [
+                      523,
+                      "        self,"
+                    ],
+                    [
+                      524,
+                      "        observation: Optional["
+                    ],
+                    [
+                      525,
+                      "            Union["
+                    ]
+                  ],
+                  "lineNo": 520,
+                  "colNo": null,
+                  "inApp": false,
+                  "trust": null,
+                  "errors": null,
+                  "lock": null,
+                  "sourceLink": null,
+                  "vars": {
+                    "e": "AssertionError()",
+                    "observation": "<langfuse.client.StatefulSpanClient object at 0x7d043134e6d0>",
+                    "self": "<langfuse.decorators.langfuse_decorator.LangfuseDecorator object at 0x7d0296b0e010>"
+                  }
+                },
+                {
+                  "filename": "langfuse/decorators/langfuse_decorator.py",
+                  "absPath": "/usr/local/lib/python3.11/dist-packages/langfuse/decorators/langfuse_decorator.py",
+                  "module": "langfuse.decorators.langfuse_decorator",
+                  "package": null,
+                  "platform": null,
+                  "instructionAddr": null,
+                  "symbolAddr": null,
+                  "function": "sync_wrapper",
+                  "rawFunction": null,
+                  "symbol": null,
+                  "context": [
+                    [
+                      249,
+                      "                func_kwargs=kwargs,"
+                    ],
+                    [
+                      250,
+                      "            )"
+                    ],
+                    [
+                      251,
+                      "            result = None"
+                    ],
+                    [
+                      252,
+                      ""
+                    ],
+                    [
+                      253,
+                      "            try:"
+                    ],
+                    [
+                      254,
+                      "                result = func(*args, **kwargs)"
+                    ],
+                    [
+                      255,
+                      "            except Exception as e:"
+                    ],
+                    [
+                      256,
+                      "                self._handle_exception(observation, e)"
+                    ],
+                    [
+                      257,
+                      "            finally:"
+                    ],
+                    [
+                      258,
+                      "                result = self._finalize_call("
+                    ],
+                    [
+                      259,
+                      "                    observation, result, capture_output, transform_to_string"
+                    ]
+                  ],
+                  "lineNo": 254,
+                  "colNo": null,
+                  "inApp": false,
+                  "trust": null,
+                  "errors": null,
+                  "lock": null,
+                  "sourceLink": null,
+                  "vars": {
+                    "args": [
+                      "<seer.automation.codegen.relevant_warnings_component.FetchIssuesComponent object at 0x7d0431101310>",
+                      "[Filtered]"
+                    ],
+                    "as_type": "None",
+                    "capture_input": "True",
+                    "capture_output": "True",
+                    "func": "<function FetchIssuesComponent.invoke at 0x7d028b8dbc40>",
+                    "kwargs": {},
+                    "name": "'Codegen - Relevant Warnings - Fetch Issues Component'",
+                    "observation": "<langfuse.client.StatefulSpanClient object at 0x7d043134e6d0>",
+                    "result": "None",
+                    "self": "<langfuse.decorators.langfuse_decorator.LangfuseDecorator object at 0x7d0296b0e010>"
+                  }
+                },
+                {
+                  "filename": "seer/automation/codegen/relevant_warnings_component.py",
+                  "absPath": "/app/src/seer/automation/codegen/relevant_warnings_component.py",
+                  "module": "seer.automation.codegen.relevant_warnings_component",
+                  "package": null,
+                  "platform": null,
+                  "instructionAddr": null,
+                  "symbolAddr": null,
+                  "function": "invoke",
+                  "rawFunction": null,
+                  "symbol": null,
+                  "context": [
+                    [
+                      194,
+                      "        if self.context.repo.provider_raw is None:"
+                    ],
+                    [
+                      195,
+                      "            raise TypeError("
+                    ],
+                    [
+                      196,
+                      "                f\"provider_raw is not set for repo: {self.context.repo}. \""
+                    ],
+                    [
+                      197,
+                      "                \"Something went wrong during initialization of the RepoDefinition.\""
+                    ],
+                    [
+                      198,
+                      "            )"
+                    ],
+                    [
+                      199,
+                      "        filename_to_issues = self._fetch_issues("
+                    ],
+                    [
+                      200,
+                      "            organization_id=request.organization_id,"
+                    ],
+                    [
+                      201,
+                      "            provider=self.context.repo.provider_raw,"
+                    ],
+                    [
+                      202,
+                      "            external_id=self.context.repo.external_id,"
+                    ],
+                    [
+                      203,
+                      "            pr_files=request.pr_files,"
+                    ],
+                    [
+                      204,
+                      "        )"
+                    ]
+                  ],
+                  "lineNo": 199,
+                  "colNo": null,
+                  "inApp": true,
+                  "trust": null,
+                  "errors": null,
+                  "lock": null,
+                  "sourceLink": null,
+                  "vars": {
+                    "request": "[Filtered]",
+                    "self": "<seer.automation.codegen.relevant_warnings_component.FetchIssuesComponent object at 0x7d0431101310>"
+                  }
+                },
+                {
+                  "filename": "seer/automation/codegen/relevant_warnings_component.py",
+                  "absPath": "/app/src/seer/automation/codegen/relevant_warnings_component.py",
+                  "module": "seer.automation.codegen.relevant_warnings_component",
+                  "package": null,
+                  "platform": null,
+                  "instructionAddr": null,
+                  "symbolAddr": null,
+                  "function": "_fetch_issues",
+                  "rawFunction": null,
+                  "symbol": null,
+                  "context": [
+                    [
+                      175,
+                      "        if not pr_files_eligible:"
+                    ],
+                    [
+                      176,
+                      "            self.logger.info(\"No eligible files in PR.\")"
+                    ],
+                    [
+                      177,
+                      "            return {}"
+                    ],
+                    [
+                      178,
+                      ""
+                    ],
+                    [
+                      179,
+                      "        self.logger.info(f\"Repo query: {organization_id=}, {provider=}, {external_id=}\")"
+                    ],
+                    [
+                      180,
+                      "        filename_to_issues = {"
+                    ],
+                    [
+                      181,
+                      "            pr_file.filename: _fetch_issues_for_pr_file("
+                    ],
+                    [
+                      182,
+                      "                organization_id, provider, external_id, pr_file, self.context.run_id, self.logger"
+                    ],
+                    [
+                      183,
+                      "            )"
+                    ],
+                    [
+                      184,
+                      "            for pr_file in pr_files_eligible[:max_files_analyzed]"
+                    ],
+                    [
+                      185,
+                      "        }"
+                    ]
+                  ],
+                  "lineNo": 180,
+                  "colNo": null,
+                  "inApp": true,
+                  "trust": null,
+                  "errors": null,
+                  "lock": null,
+                  "sourceLink": null,
+                  "vars": {
+                    "external_id": "'904533877'",
+                    "max_files_analyzed": "7",
+                    "max_lines_analyzed": "500",
+                    "organization_id": "26192",
+                    "pr_files": [
+                      "[Filtered]"
+                    ],
+                    "pr_files_eligible": [
+                      "[Filtered]"
+                    ]
+                  }
+                },
+                {
+                  "filename": "seer/automation/codegen/relevant_warnings_component.py",
+                  "absPath": "/app/src/seer/automation/codegen/relevant_warnings_component.py",
+                  "module": "seer.automation.codegen.relevant_warnings_component",
+                  "package": null,
+                  "platform": null,
+                  "instructionAddr": null,
+                  "symbolAddr": null,
+                  "function": "<dictcomp>",
+                  "rawFunction": null,
+                  "symbol": null,
+                  "context": [
+                    [
+                      176,
+                      "            self.logger.info(\"No eligible files in PR.\")"
+                    ],
+                    [
+                      177,
+                      "            return {}"
+                    ],
+                    [
+                      178,
+                      ""
+                    ],
+                    [
+                      179,
+                      "        self.logger.info(f\"Repo query: {organization_id=}, {provider=}, {external_id=}\")"
+                    ],
+                    [
+                      180,
+                      "        filename_to_issues = {"
+                    ],
+                    [
+                      181,
+                      "            pr_file.filename: _fetch_issues_for_pr_file("
+                    ],
+                    [
+                      182,
+                      "                organization_id, provider, external_id, pr_file, self.context.run_id, self.logger"
+                    ],
+                    [
+                      183,
+                      "            )"
+                    ],
+                    [
+                      184,
+                      "            for pr_file in pr_files_eligible[:max_files_analyzed]"
+                    ],
+                    [
+                      185,
+                      "        }"
+                    ],
+                    [
+                      186,
+                      "        return {"
+                    ]
+                  ],
+                  "lineNo": 181,
+                  "colNo": null,
+                  "inApp": true,
+                  "trust": null,
+                  "errors": null,
+                  "lock": null,
+                  "sourceLink": null,
+                  "vars": {
+                    ".0": "<list_iterator object at 0x7d043590ae00>",
+                    "external_id": "'904533877'",
+                    "organization_id": "26192",
+                    "pr_file": "[Filtered]",
+                    "provider": "'integrations:github'",
+                    "self": "<seer.automation.codegen.relevant_warnings_component.FetchIssuesComponent object at 0x7d0431101310>"
+                  }
+                },
+                {
+                  "filename": "cachetools/_decorators.py",
+                  "absPath": "/usr/local/lib/python3.11/dist-packages/cachetools/_decorators.py",
+                  "module": "cachetools._decorators",
+                  "package": null,
+                  "platform": null,
+                  "instructionAddr": null,
+                  "symbolAddr": null,
+                  "function": "wrapper",
+                  "rawFunction": null,
+                  "symbol": null,
+                  "context": [
+                    [
+                      112,
+                      "        k = key(*args, **kwargs)"
+                    ],
+                    [
+                      113,
+                      "        try:"
+                    ],
+                    [
+                      114,
+                      "            return cache[k]"
+                    ],
+                    [
+                      115,
+                      "        except KeyError:"
+                    ],
+                    [
+                      116,
+                      "            pass  # key not found"
+                    ],
+                    [
+                      117,
+                      "        v = func(*args, **kwargs)"
+                    ],
+                    [
+                      118,
+                      "        try:"
+                    ],
+                    [
+                      119,
+                      "            cache[k] = v"
+                    ],
+                    [
+                      120,
+                      "        except ValueError:"
+                    ],
+                    [
+                      121,
+                      "            pass  # value too large"
+                    ],
+                    [
+                      122,
+                      "        return v"
+                    ]
+                  ],
+                  "lineNo": 117,
+                  "colNo": null,
+                  "inApp": false,
+                  "trust": null,
+                  "errors": null,
+                  "lock": null,
+                  "sourceLink": null,
+                  "vars": {
+                    "args": [
+                      "26192",
+                      "'integrations:github'",
+                      "'904533877'",
+                      "[Filtered]",
+                      "9396",
+                      "<PrefixedLoggingAdapter seer.automation.component (INFO)>"
+                    ],
+                    "cache": {
+                      "(26192, 'integrations:github', '667550736', 'upload/tests/views/test_bundle_analysis.py', '3e65c0b7c041f057e4436129afce3884565fab05')": [],
+                      "(26192, 'integrations:github', '667550736', 'upload/tests/views/test_test_results.py', '24e0a783cce1ccd4e69a7ad6bd8f00c19652545c')": [],
+                      "(26192, 'integrations:github', '667550736', 'upload/tests/views/test_uploads.py', '2019a415d564cb41868e5067c6aad7ba1c4e1911')": [],
+                      "(26192, 'integrations:github', '667550736', 'upload/views/bundle_analysis.py', '6bfc369654173e9d4317d2e45dd6dd4122d552fb')": [],
+                      "(26192, 'integrations:github', '667550736', 'upload/views/test_results.py', '4d8a4986b7006385b59f422af5e2d4309971b9b3')": [
+                        {
+                          "events": "[\"{'id': '38fc792770d04265bd88ac1dd954f98c', 'groupID': '5919622537', 'eventID': '38fc792770d04265bd88ac1dd954f98c', 'projectID': '5215654', 'size': 49581, 'entries': [{'data': {'values': [{'type': 'OperationalError', 'value': 'server closed the connection unexpectedly\\\\n\\\\tThis probably means the server terminated abnormally\\\\n\\\\tbefore or while processing the request.\\\\n', 'mechanism': {'type': 'django', 'handled': False}, 'threadId': None, 'module': 'psycopg2', 'stacktrace': {'frames': [{'filename': 'django/db/backends/utils.py', 'absPath': '/usr/local/lib/python3.12/site-packages/django/db/backends/utils.py', 'module': 'django.db.backends.utils', 'package': None, 'platform': None, 'instructionAddr': None, 'symbolAddr': None, 'function': '_execute', 'rawFunction': None, 'symbol': None, 'context': [[84, '        with self.db.wrap_database_errors:'], [85, '            if param..."
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "filename": "seer/dependency_injection.py",
+                  "absPath": "/app/src/seer/dependency_injection.py",
+                  "module": "seer.dependency_injection",
+                  "package": null,
+                  "platform": null,
+                  "instructionAddr": null,
+                  "symbolAddr": null,
+                  "function": "wrapper",
+                  "rawFunction": null,
+                  "symbol": null,
+                  "context": [
+                    [
+                      222,
+                      "                    try:"
+                    ],
+                    [
+                      223,
+                      "                        new_kwds[k] = resolve(argspec.annotations[k])"
+                    ],
+                    [
+                      224,
+                      "                    except KeyError:"
+                    ],
+                    [
+                      225,
+                      "                        raise AssertionError(f\"Cannot inject argument {k} as it lacks annotations\")"
+                    ],
+                    [
+                      226,
+                      ""
+                    ],
+                    [
+                      227,
+                      "        return c(*args, **new_kwds)  # type: ignore"
+                    ],
+                    [
+                      228,
+                      ""
+                    ],
+                    [
+                      229,
+                      "    if inspect.isclass(original_type):"
+                    ],
+                    [
+                      230,
+                      "        return type(original_type.__name__, (original_type,), dict(__init__=wrapper))  # type: ignore"
+                    ],
+                    [
+                      231,
+                      ""
+                    ],
+                    [
+                      232,
+                      "    return wrapper  # type: ignore"
+                    ]
+                  ],
+                  "lineNo": 227,
+                  "colNo": null,
+                  "inApp": true,
+                  "trust": null,
+                  "errors": null,
+                  "lock": null,
+                  "sourceLink": null,
+                  "vars": {
+                    "arg_idx": "6",
+                    "arg_name": "'client'",
+                    "args": [
+                      "26192",
+                      "'integrations:github'",
+                      "'904533877'",
+                      "[Filtered]",
+                      "9396",
+                      "<PrefixedLoggingAdapter seer.automation.component (INFO)>"
+                    ],
+                    "argspec": [
+                      [
+                        "'organization_id'",
+                        "'provider'",
+                        "'external_id'",
+                        "'pr_file'",
+                        "'run_id'",
+                        "'logger'",
+                        "'client'"
+                      ],
+                      "None",
+                      "None",
+                      [
+                        "<seer.dependency_injection._Injected object at 0x7d043a569350>"
+                      ],
+                      [],
+                      "None",
+                      {
+                        "client": "<class 'seer.rpc.RpcClient'>",
+                        "external_id": "<class 'str'>",
+                        "logger": "<class 'logging.Logger'>",
+                        "organization_id": "<class 'int'>",
+                        "pr_file": "<class 'seer.automation.codegen.models.PrFile'>",
+                        "provider": "<class 'str'>",
+                        "return": "list[dict[str, typing.Any]]",
+                        "run_id": "<class 'int'>"
+                      }
+                    ],
+                    "d": "<seer.dependency_injection._Injected object at 0x7d043a569350>",
+                    "i": "0",
+                    "kwargs": {},
+                    "new_kwds": {
+                      "client": "<seer.rpc.SentryRpcClient object at 0x7d0437295cd0>"
+                    },
+                    "offset": "6",
+                    "resolved": "<seer.rpc.SentryRpcClient object at 0x7d0437295cd0>"
+                  }
+                },
+                {
+                  "filename": "seer/automation/codegen/relevant_warnings_component.py",
+                  "absPath": "/app/src/seer/automation/codegen/relevant_warnings_component.py",
+                  "module": "seer.automation.codegen.relevant_warnings_component",
+                  "package": null,
+                  "platform": null,
+                  "instructionAddr": null,
+                  "symbolAddr": null,
+                  "function": "_fetch_issues_for_pr_file",
+                  "rawFunction": null,
+                  "symbol": null,
+                  "context": [
+                    [
+                      136,
+                      "        logger.exception("
+                    ],
+                    [
+                      137,
+                      "            \"Something went wrong with the issue-fetching RPC call\","
+                    ],
+                    [
+                      138,
+                      "            extra={\"file\": pr_file.filename},"
+                    ],
+                    [
+                      139,
+                      "        )"
+                    ],
+                    [
+                      140,
+                      "        return []"
+                    ],
+                    [
+                      141,
+                      "    assert list(pr_filename_to_issues.keys()) == [pr_file.filename]"
+                    ],
+                    [
+                      142,
+                      "    return list(pr_filename_to_issues.values())[0]"
+                    ],
+                    [
+                      143,
+                      ""
+                    ],
+                    [
+                      144,
+                      ""
+                    ],
+                    [
+                      145,
+                      "class FetchIssuesComponent(BaseComponent[CodeFetchIssuesRequest, CodeFetchIssuesOutput]):"
+                    ],
+                    [
+                      146,
+                      "    \"\"\""
+                    ]
+                  ],
+                  "lineNo": 141,
+                  "colNo": null,
+                  "inApp": true,
+                  "trust": null,
+                  "errors": null,
+                  "lock": null,
+                  "sourceLink": null,
+                  "vars": {
+                    "client": "<seer.rpc.SentryRpcClient object at 0x7d0437295cd0>",
+                    "external_id": "'904533877'",
+                    "logger": "<PrefixedLoggingAdapter seer.automation.component (INFO)>",
+                    "organization_id": "26192",
+                    "pr_file": "[Filtered]",
+                    "pr_filename_to_issues": {},
+                    "provider": "'integrations:github'",
+                    "run_id": "9396"
+                  }
+                }
+              ],
+              "framesOmitted": null,
+              "registers": null,
+              "hasSystemFrames": true
+            },
+            "rawStacktrace": null
+          }
+        ],
+        "hasSystemFrames": true,
+        "excOmitted": null
+      },
+      "type": "exception"
+    },
+    {
+      "data": {
+        "values": [
+          {
+            "type": "log",
+            "timestamp": "2025-03-10T22:56:01.556732Z",
+            "level": "info",
+            "message": "Task started, worker: celery@seer-web-autofix-5667c75569-nldjf, process: 15",
+            "category": "celery_app.app",
+            "data": {
+              "asctime": "2025-03-10 22:56:01,556"
+            },
+            "event_id": null
+          },
+          {
+            "type": "default",
+            "timestamp": "2025-03-10T22:56:01.559809Z",
+            "level": "info",
+            "message": "SELECT run_state.id, run_state.group_id, run_state.type, run_state.value,\n       run_state.last_triggered_at, run_state.updated_at\nFROM run_state\nWHERE run_state.id = %(id_1)s::INTEGER\n  FOR\n  UPDATE",
+            "category": "query",
+            "data": null,
+            "event_id": null,
+            "messageFormat": "sql",
+            "messageRaw": "SELECT run_state.id, run_state.group_id, run_state.type, run_state.value, run_state.last_triggered_at, run_state.updated_at \nFROM run_state \nWHERE run_state.id = %(id_1)s::INTEGER FOR UPDATE"
+          },
+          {
+            "type": "default",
+            "timestamp": "2025-03-10T22:56:01.563141Z",
+            "level": "info",
+            "message": "UPDATE run_state\nSET value=%(value)s::JSON, last_triggered_at=%(last_triggered_at)s::TIMESTAMP WITHOUT TIME ZONE,\n                                                                                           updated_at=%(updated_at)s::TIMESTAMP WITHOUT TIME ZONE\nWHERE run_state.id = %(run_state_id)s::INTEGER",
+            "category": "query",
+            "data": null,
+            "event_id": null,
+            "messageFormat": "sql",
+            "messageRaw": "UPDATE run_state SET value=%(value)s::JSON, last_triggered_at=%(last_triggered_at)s::TIMESTAMP WITHOUT TIME ZONE, updated_at=%(updated_at)s::TIMESTAMP WITHOUT TIME ZONE WHERE run_state.id = %(run_state_id)s::INTEGER"
+          },
+          {
+            "type": "default",
+            "timestamp": "2025-03-10T22:56:01.567228Z",
+            "level": "info",
+            "message": "SELECT run_state.id AS run_state_id, run_state.group_id AS run_state_group_id,\n       run_state.type AS run_state_type, run_state.value AS run_state_value,\n       run_state.last_triggered_at AS run_state_last_triggered_at, run_state.updated_at AS run_state_updated_at\nFROM run_state\nWHERE run_state.id = %(pk_1)s::INTEGER",
+            "category": "query",
+            "data": null,
+            "event_id": null,
+            "messageFormat": "sql",
+            "messageRaw": "SELECT run_state.id AS run_state_id, run_state.group_id AS run_state_group_id, run_state.type AS run_state_type, run_state.value AS run_state_value, run_state.last_triggered_at AS run_state_last_triggered_at, run_state.updated_at AS run_state_updated_at \nFROM run_state \nWHERE run_state.id = %(pk_1)s::INTEGER"
+          },
+          {
+            "type": "default",
+            "timestamp": "2025-03-10T22:56:01.572108Z",
+            "level": "info",
+            "message": "SELECT run_state.id AS run_state_id, run_state.group_id AS run_state_group_id,\n       run_state.type AS run_state_type, run_state.value AS run_state_value,\n       run_state.last_triggered_at AS run_state_last_triggered_at, run_state.updated_at AS run_state_updated_at\nFROM run_state\nWHERE run_state.id = %(pk_1)s::INTEGER",
+            "category": "query",
+            "data": null,
+            "event_id": null,
+            "messageFormat": "sql",
+            "messageRaw": "SELECT run_state.id AS run_state_id, run_state.group_id AS run_state_group_id, run_state.type AS run_state_type, run_state.value AS run_state_value, run_state.last_triggered_at AS run_state_last_triggered_at, run_state.updated_at AS run_state_updated_at \nFROM run_state \nWHERE run_state.id = %(pk_1)s::INTEGER"
+          },
+          {
+            "type": "log",
+            "timestamp": "2025-03-10T22:56:01.575798Z",
+            "level": "info",
+            "message": "CodegenContext initialized with run_id 9396",
+            "category": "seer.automation.codegen.codegen_context",
+            "data": {
+              "asctime": "2025-03-10 22:56:01,575"
+            },
+            "event_id": null
+          },
+          {
+            "type": "default",
+            "timestamp": "2025-03-10T22:56:01.577420Z",
+            "level": "info",
+            "message": "SELECT run_state.id AS run_state_id, run_state.group_id AS run_state_group_id,\n       run_state.type AS run_state_type, run_state.value AS run_state_value,\n       run_state.last_triggered_at AS run_state_last_triggered_at, run_state.updated_at AS run_state_updated_at\nFROM run_state\nWHERE run_state.id = %(pk_1)s::INTEGER",
+            "category": "query",
+            "data": null,
+            "event_id": null,
+            "messageFormat": "sql",
+            "messageRaw": "SELECT run_state.id AS run_state_id, run_state.group_id AS run_state_group_id, run_state.type AS run_state_type, run_state.value AS run_state_value, run_state.last_triggered_at AS run_state_last_triggered_at, run_state.updated_at AS run_state_updated_at \nFROM run_state \nWHERE run_state.id = %(pk_1)s::INTEGER"
+          },
+          {
+            "type": "default",
+            "timestamp": "2025-03-10T22:56:01.582431Z",
+            "level": "info",
+            "message": "SELECT run_state.id AS run_state_id, run_state.group_id AS run_state_group_id,\n       run_state.type AS run_state_type, run_state.value AS run_state_value,\n       run_state.last_triggered_at AS run_state_last_triggered_at, run_state.updated_at AS run_state_updated_at\nFROM run_state\nWHERE run_state.id = %(pk_1)s::INTEGER",
+            "category": "query",
+            "data": null,
+            "event_id": null,
+            "messageFormat": "sql",
+            "messageRaw": "SELECT run_state.id AS run_state_id, run_state.group_id AS run_state_group_id, run_state.type AS run_state_type, run_state.value AS run_state_value, run_state.last_triggered_at AS run_state_last_triggered_at, run_state.updated_at AS run_state_updated_at \nFROM run_state \nWHERE run_state.id = %(pk_1)s::INTEGER"
+          },
+          {
+            "type": "default",
+            "timestamp": "2025-03-10T22:56:01.588306Z",
+            "level": "info",
+            "message": "SELECT run_state.id AS run_state_id, run_state.group_id AS run_state_group_id,\n       run_state.type AS run_state_type, run_state.value AS run_state_value,\n       run_state.last_triggered_at AS run_state_last_triggered_at, run_state.updated_at AS run_state_updated_at\nFROM run_state\nWHERE run_state.id = %(pk_1)s::INTEGER",
+            "category": "query",
+            "data": null,
+            "event_id": null,
+            "messageFormat": "sql",
+            "messageRaw": "SELECT run_state.id AS run_state_id, run_state.group_id AS run_state_group_id, run_state.type AS run_state_type, run_state.value AS run_state_value, run_state.last_triggered_at AS run_state_last_triggered_at, run_state.updated_at AS run_state_updated_at \nFROM run_state \nWHERE run_state.id = %(pk_1)s::INTEGER"
+          },
+          {
+            "type": "log",
+            "timestamp": "2025-03-10T22:56:01.591893Z",
+            "level": "info",
+            "message": "[run_id=9396] [RelevantWarningsStep] Executing Codegen - Relevant Warnings Step",
+            "category": "seer.automation.pipeline",
+            "data": {
+              "asctime": "2025-03-10 22:56:01,591"
+            },
+            "event_id": null
+          },
+          {
+            "type": "default",
+            "timestamp": "2025-03-10T22:56:01.593508Z",
+            "level": "info",
+            "message": "SELECT run_state.id, run_state.group_id, run_state.type, run_state.value,\n       run_state.last_triggered_at, run_state.updated_at\nFROM run_state\nWHERE run_state.id = %(id_1)s::INTEGER\n  FOR\n  UPDATE",
+            "category": "query",
+            "data": null,
+            "event_id": null,
+            "messageFormat": "sql",
+            "messageRaw": "SELECT run_state.id, run_state.group_id, run_state.type, run_state.value, run_state.last_triggered_at, run_state.updated_at \nFROM run_state \nWHERE run_state.id = %(id_1)s::INTEGER FOR UPDATE"
+          },
+          {
+            "type": "default",
+            "timestamp": "2025-03-10T22:56:01.596469Z",
+            "level": "info",
+            "message": "UPDATE run_state\nSET value=%(value)s::JSON, updated_at=%(updated_at)s::TIMESTAMP WITHOUT TIME ZONE\nWHERE run_state.id = %(run_state_id)s::INTEGER",
+            "category": "query",
+            "data": null,
+            "event_id": null,
+            "messageFormat": "sql",
+            "messageRaw": "UPDATE run_state SET value=%(value)s::JSON, updated_at=%(updated_at)s::TIMESTAMP WITHOUT TIME ZONE WHERE run_state.id = %(run_state_id)s::INTEGER"
+          },
+          {
+            "type": "http",
+            "timestamp": "2025-03-10T22:56:01.704025Z",
+            "level": "info",
+            "message": null,
+            "category": "httplib",
+            "data": {
+              "http.fragment": "",
+              "http.method": "GET",
+              "http.query": "",
+              "http.response.status_code": 200,
+              "reason": "OK",
+              "thread.id": "137457176073344",
+              "thread.name": "MainThread",
+              "url": "https://api.github.com/repos/codecov/overwatch/installation"
+            },
+            "event_id": null
+          },
+          {
+            "type": "http",
+            "timestamp": "2025-03-10T22:56:01.928480Z",
+            "level": "info",
+            "message": null,
+            "category": "httplib",
+            "data": {
+              "http.fragment": "",
+              "http.method": "POST",
+              "http.query": "",
+              "http.response.status_code": 201,
+              "reason": "Created",
+              "thread.id": "137457176073344",
+              "thread.name": "MainThread",
+              "url": "[Filtered]"
+            },
+            "event_id": null
+          },
+          {
+            "type": "http",
+            "timestamp": "2025-03-10T22:56:02.110367Z",
+            "level": "info",
+            "message": null,
+            "category": "httplib",
+            "data": {
+              "http.fragment": "",
+              "http.method": "GET",
+              "http.query": "",
+              "http.response.status_code": 200,
+              "reason": "OK",
+              "thread.id": "137457176073344",
+              "thread.name": "MainThread",
+              "url": "https://api.github.com/repositories/904533877"
+            },
+            "event_id": null
+          },
+          {
+            "type": "http",
+            "timestamp": "2025-03-10T22:56:02.626352Z",
+            "level": "info",
+            "message": null,
+            "category": "httplib",
+            "data": {
+              "http.fragment": "",
+              "http.method": "GET",
+              "http.query": "",
+              "http.response.status_code": 200,
+              "reason": "OK",
+              "thread.id": "137457176073344",
+              "thread.name": "MainThread",
+              "url": "https://api.github.com/repos/codecov/overwatch/branches/main"
+            },
+            "event_id": null
+          },
+          {
+            "type": "http",
+            "timestamp": "2025-03-10T22:56:03.036059Z",
+            "level": "info",
+            "message": null,
+            "category": "httplib",
+            "data": {
+              "http.fragment": "",
+              "http.method": "GET",
+              "http.query": "",
+              "http.response.status_code": 200,
+              "reason": "OK",
+              "thread.id": "137457176073344",
+              "thread.name": "MainThread",
+              "url": "https://api.github.com/repos/codecov/overwatch/pulls/224"
+            },
+            "event_id": null
+          },
+          {
+            "type": "http",
+            "timestamp": "2025-03-10T22:56:03.530784Z",
+            "level": "info",
+            "message": null,
+            "category": "httplib",
+            "data": {
+              "http.fragment": "",
+              "http.method": "GET",
+              "http.query": "",
+              "http.response.status_code": 200,
+              "reason": "OK",
+              "thread.id": "137457176073344",
+              "thread.name": "MainThread",
+              "url": "https://api.github.com/repos/codecov/overwatch/pulls/224/files"
+            },
+            "event_id": null
+          },
+          {
+            "type": "default",
+            "timestamp": "2025-03-10T22:56:03.768387Z",
+            "level": "info",
+            "message": "SELECT run_state.id AS run_state_id, run_state.group_id AS run_state_group_id,\n       run_state.type AS run_state_type, run_state.value AS run_state_value,\n       run_state.last_triggered_at AS run_state_last_triggered_at, run_state.updated_at AS run_state_updated_at\nFROM run_state\nWHERE run_state.id = %(pk_1)s::INTEGER",
+            "category": "query",
+            "data": null,
+            "event_id": null,
+            "messageFormat": "sql",
+            "messageRaw": "SELECT run_state.id AS run_state_id, run_state.group_id AS run_state_group_id, run_state.type AS run_state_type, run_state.value AS run_state_value, run_state.last_triggered_at AS run_state_last_triggered_at, run_state.updated_at AS run_state_updated_at \nFROM run_state \nWHERE run_state.id = %(pk_1)s::INTEGER"
+          },
+          {
+            "type": "log",
+            "timestamp": "2025-03-10T22:56:03.783132Z",
+            "level": "info",
+            "message": "[run_id=9396] [seer.automation.codegen.relevant_warnings_component.FilterWarningsComponent] warning.encoded_location='app/Services/SentryService.php:55' matches={'app/Services/SentryService.php'}",
+            "category": "seer.automation.component",
+            "data": {
+              "asctime": "2025-03-10 22:56:03,783"
+            },
+            "event_id": null
+          },
+          {
+            "type": "default",
+            "timestamp": "2025-03-10T22:56:03.791023Z",
+            "level": "info",
+            "message": "SELECT run_state.id AS run_state_id, run_state.group_id AS run_state_group_id,\n       run_state.type AS run_state_type, run_state.value AS run_state_value,\n       run_state.last_triggered_at AS run_state_last_triggered_at, run_state.updated_at AS run_state_updated_at\nFROM run_state\nWHERE run_state.id = %(pk_1)s::INTEGER",
+            "category": "query",
+            "data": null,
+            "event_id": null,
+            "messageFormat": "sql",
+            "messageRaw": "SELECT run_state.id AS run_state_id, run_state.group_id AS run_state_group_id, run_state.type AS run_state_type, run_state.value AS run_state_value, run_state.last_triggered_at AS run_state_last_triggered_at, run_state.updated_at AS run_state_updated_at \nFROM run_state \nWHERE run_state.id = %(pk_1)s::INTEGER"
+          },
+          {
+            "type": "log",
+            "timestamp": "2025-03-10T22:56:03.794918Z",
+            "level": "info",
+            "message": "[run_id=9396] [seer.automation.codegen.relevant_warnings_component.FetchIssuesComponent] Repo query: organization_id=26192, provider='integrations:github', external_id='904533877'",
+            "category": "seer.automation.component",
+            "data": {
+              "asctime": "2025-03-10 22:56:03,794"
+            },
+            "event_id": null
+          },
+          {
+            "type": "default",
+            "timestamp": "2025-03-10T22:56:03.796572Z",
+            "level": "info",
+            "message": "SELECT run_state.id AS run_state_id, run_state.group_id AS run_state_group_id,\n       run_state.type AS run_state_type, run_state.value AS run_state_value,\n       run_state.last_triggered_at AS run_state_last_triggered_at, run_state.updated_at AS run_state_updated_at\nFROM run_state\nWHERE run_state.id = %(pk_1)s::INTEGER",
+            "category": "query",
+            "data": null,
+            "event_id": null,
+            "messageFormat": "sql",
+            "messageRaw": "SELECT run_state.id AS run_state_id, run_state.group_id AS run_state_group_id, run_state.type AS run_state_type, run_state.value AS run_state_value, run_state.last_triggered_at AS run_state_last_triggered_at, run_state.updated_at AS run_state_updated_at \nFROM run_state \nWHERE run_state.id = %(pk_1)s::INTEGER"
+          },
+          {
+            "type": "http",
+            "timestamp": "2025-03-10T22:56:03.804949Z",
+            "level": "info",
+            "message": null,
+            "category": "httplib",
+            "data": {
+              "http.fragment": "",
+              "http.method": "POST",
+              "http.query": "",
+              "http.response.status_code": 200,
+              "reason": "OK",
+              "thread.id": "137457176073344",
+              "thread.name": "MainThread",
+              "url": "http://frontend-internal.sentry/api/0/internal/seer-rpc/get_issues_related_to_file_patches/"
+            },
+            "event_id": null
+          }
+        ]
+      },
+      "type": "breadcrumbs"
+    }
+  ],
+  "dist": null,
+  "message": "",
+  "title": "AssertionError",
+  "location": "seer/automation/codegen/relevant_warnings_component.py",
+  "user": null,
+  "contexts": {
+    "runtime": {
+      "runtime": "CPython 3.11.0",
+      "name": "CPython",
+      "version": "3.11.0",
+      "build": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+      "type": "runtime"
+    },
+    "trace": {
+      "trace_id": "3fcde073e0f14902ab59c2a2c9f47fd0",
+      "span_id": "85672e846df737c4",
+      "parent_span_id": "876364d46f1082a3",
+      "op": "ai.pipeline",
+      "status": "unknown",
+      "client_sample_rate": 1,
+      "origin": "manual",
+      "data": {
+        "thread.name": "MainThread",
+        "thread.id": "137457176073344"
+      },
+      "description": "Codegen - Relevant Warnings Step",
+      "type": "trace"
+    }
+  },
+  "sdk": {
+    "name": "sentry.python.flask",
+    "version": "2.18.0"
+  },
+  "context": {
+    "celery-job": {
+      "args": [],
+      "kwargs": {
+        "request": {
+          "callback_url": "https://overwatch.codecov.dev/api/ai/seer/relevant-warnings",
+          "commit_sha": "7fa0d5b6a503c5c73374615c1cdb689c0e62a78d",
+          "max_num_associations": 10,
+          "max_num_issues_analyzed": 10,
+          "organization_id": 26192,
+          "pr_id": 224,
+          "repo": {
+            "base_commit_sha": "None",
+            "external_id": "'904533877'",
+            "name": "'overwatch'",
+            "owner": "'codecov'",
+            "provider": "'github'",
+            "provider_raw": "'integrations:github'"
+          },
+          "run_id": 9396,
+          "should_post_to_overwatch": true,
+          "warnings": [
+            "{'id': 95579, 'code': 'class.notFound', 'message': 'PHPDoc tag @mixin contains unknown class Eloquent.', 'encoded_location': 'app/Models/Role.php:18', 'rule_id': 1295, 'rule': None}",
+            "{'id': 95580, 'code': 'class.notFound', 'message': 'Parameter $results of method App\\\\Jobs\\\\Notifier::__construct() has invalid type App\\\\Jobs\\\\NotificationSegmentDTO.', 'encoded_location': 'app/Jobs/Notifier.php:39', 'rule_id': 1295, 'rule': None}",
+            "{'id': 95581, 'code': 'class.notFound', 'message': 'Property App\\\\Jobs\\\\Notifier::$results has unknown class App\\\\Jobs\\\\NotificationSegmentDTO as its type.', 'encoded_location': 'app/Jobs/Notifier.php:39', 'rule_id': 1295, 'rule': None}",
+            "{'id': 95582, 'code': 'class.notFound', 'message': 'Access to property $relevanceProbability on an unknown class App\\\\Jobs\\\\NotificationSegmentDTO.', 'encoded_location': 'app/Jobs/Notifier.php:131', 'rule_id': 1295, 'rule': None}",
+            "{'id': 95583, 'code': 'class.notFound', 'message': 'Access to property $encodedLocation on an unknown class App\\\\Jobs\\\\NotificationSegmentDTO.', 'encoded_location': 'app/Jobs/Notifier.php:142', 'rule_id': 1295, 'rule': None}",
+            "{'id': 95584, 'code': 'class.notFound', 'message': 'Access to property $shortDescription on an unknown class App\\\\Jobs\\\\NotificationSegmentDTO.', 'encoded_location': 'app/Jobs/Notifier.php:151', 'rule_id': 1295, 'rule': None}",
+            "{'id': 95585, 'code': 'class.notFound', 'message': 'Access to property $shortJustification on an unknown class App\\\\Jobs\\\\NotificationSegmentDTO.', 'encoded_location': 'app/Jobs/Notifier.php:152', 'rule_id': 1295, 'rule': None}",
+            "{'id': 95586, 'code': 'class.notFound', 'message': 'Parameter $individual_results of method App\\\\DTOs\\\\UploadResultContextDTO::__construct() has invalid type App\\\\DTOs\\\\IndividualResultContextDTO.', 'encoded_location': 'app/DTOs/ProcessUploadResultDTO.php:50', 'rule_id': 1295, 'rule': None}",
+            "{'id': 95587, 'code': 'class.notFound', 'message': 'Property App\\\\DTOs\\\\UploadResultContextDTO::$individual_results has unknown class App\\\\DTOs\\\\IndividualResultContextDTO as its type.', 'encoded_location': 'app/DTOs/ProcessUploadResultDTO.php:50', 'rule_id': 1295, 'rule': None}",
+            "{'id': 95588, 'code': 'class.notFound', 'message': 'Call to method toArray() on an unknown class App\\\\DTOs\\\\IndividualResultContextDTO.', 'encoded_location': 'app/DTOs/ProcessUploadResultDTO.php:77', 'rule_id': 1295, 'rule': None}"
+          ]
+        }
+      },
+      "task_name": "seer.automation.codegen.relevant_warnings_step.relevant_warnings_task"
+    },
+    "sys.argv": [
+      "/usr/local/bin/celery",
+      "-A",
+      "src.celery_app.tasks",
+      "worker",
+      "--loglevel=info",
+      "-Q",
+      "seer-autofix",
+      "-c",
+      "16"
+    ]
+  },
+  "packages": {
+    "aiohappyeyeballs": "2.4.8",
+    "aiohttp": "3.11.13",
+    "aiosignal": "1.3.2",
+    "alembic": "1.15.1",
+    "amqp": "5.3.1",
+    "annotated-types": "0.7.0",
+    "anthropic": "0.49.0",
+    "anyio": "4.8.0",
+    "asgiref": "3.8.1",
+    "attrs": "25.1.0",
+    "backoff": "2.2.1",
+    "bcrypt": "4.3.0",
+    "billiard": "4.2.1",
+    "blinker": "1.9.0",
+    "build": "1.2.2.post1",
+    "cachetools": "5.5.2",
+    "celery": "5.3.6",
+    "celery-stubs": "0.1.3",
+    "certifi": "2025.1.31",
+    "cffi": "1.17.1",
+    "chardet": "5.2.0",
+    "charset-normalizer": "2.1.1",
+    "chroma-hnswlib": "0.7.3",
+    "chromadb": "0.4.14",
+    "click": "8.1.8",
+    "click-didyoumean": "0.3.1",
+    "click-plugins": "1.1.1",
+    "click-repl": "0.3.0",
+    "cmdstanpy": "1.2.5",
+    "coloredlogs": "15.0.1",
+    "contourpy": "1.1.1",
+    "convertdate": "2.4.0",
+    "covdefaults": "2.3.0",
+    "coverage": "7.6.12",
+    "cryptography": "43.0.3",
+    "cycler": "0.11.0",
+    "cython": "3.0.2",
+    "datasets": "3.3.2",
+    "deprecated": "1.2.18",
+    "dill": "0.3.8",
+    "distro": "1.9.0",
+    "docstring_parser": "0.16",
+    "ephem": "4.1.4",
+    "fastapi": "0.115.11",
+    "filelock": "3.12.2",
+    "flask": "2.2.5",
+    "flask-migrate": "4.1.0",
+    "flask-sqlalchemy": "3.1.1",
+    "flatbuffers": "25.2.10",
+    "fonttools": "4.43.0",
+    "frozenlist": "1.5.0",
+    "fsspec": "2023.6.0",
+    "google-api-core": "2.24.1",
+    "google-auth": "2.38.0",
+    "google-cloud-aiplatform": "1.82.0",
+    "google-cloud-bigquery": "3.30.0",
+    "google-cloud-core": "2.4.2",
+    "google-cloud-resource-manager": "1.14.1",
+    "google-cloud-secret-manager": "2.23.1",
+    "google-cloud-storage": "2.19.0",
+    "google-crc32c": "1.6.0",
+    "google-genai": "1.2.0",
+    "google-resumable-media": "2.7.2",
+    "googleapis-common-protos": "1.69.0",
+    "greenlet": "3.1.1",
+    "grpc-google-iam-v1": "0.14.1",
+    "grpc-stubs": "1.53.0.5",
+    "grpcio": "1.70.0",
+    "grpcio-health-checking": "1.70.0",
+    "grpcio-reflection": "1.70.0",
+    "grpcio-status": "1.70.0",
+    "gunicorn": "22.0.0",
+    "h11": "0.14.0",
+    "holidays": "0.31",
+    "httpcore": "1.0.7",
+    "httptools": "0.6.4",
+    "httpx": "0.27.2",
+    "huggingface-hub": "0.29.2",
+    "humanfriendly": "10.0",
+    "idna": "3.10",
+    "importlib-resources": "6.0.1",
+    "iniconfig": "2.0.0",
+    "isodate": "0.7.2",
+    "itsdangerous": "2.1.2",
+    "jinja2": "3.1.4",
+    "jiter": "0.8.2",
+    "joblib": "1.3.2",
+    "johen": "0.1.5",
+    "jsonschema": "4.23.0",
+    "jsonschema-path": "0.3.4",
+    "jsonschema-spec": "0.2.4",
+    "jsonschema-specifications": "2023.7.1",
+    "kiwisolver": "1.4.5",
+    "kombu": "5.4.2",
+    "langfuse": "2.59.2",
+    "lazy-object-proxy": "1.10.0",
+    "llvmlite": "0.44.0",
+    "lunarcalendar": "0.0.9",
+    "mako": "1.3.9",
+    "markdown-it-py": "3.0.0",
+    "markupsafe": "2.1.3",
+    "matplotlib": "3.10.1",
+    "mdurl": "0.1.2",
+    "monotonic": "1.6",
+    "more-itertools": "10.6.0",
+    "mpmath": "1.3.0",
+    "multidict": "6.1.0",
+    "multiprocess": "0.70.16",
+    "mypy": "1.8.0",
+    "mypy-extensions": "1.0.0",
+    "networkx": "3.1",
+    "nltk": "3.9.1",
+    "numba": "0.61.0",
+    "numpy": "1.26.1",
+    "nvidia-cublas-cu12": "12.1.3.1",
+    "nvidia-cuda-cupti-cu12": "12.1.105",
+    "nvidia-cuda-nvrtc-cu12": "12.1.105",
+    "nvidia-cuda-runtime-cu12": "12.1.105",
+    "nvidia-cudnn-cu12": "8.9.2.26",
+    "nvidia-cufft-cu12": "11.0.2.54",
+    "nvidia-curand-cu12": "10.3.2.106",
+    "nvidia-cusolver-cu12": "11.4.5.107",
+    "nvidia-cusparse-cu12": "12.1.0.106",
+    "nvidia-nccl-cu12": "2.19.3",
+    "nvidia-nvjitlink-cu12": "12.8.93",
+    "nvidia-nvtx-cu12": "12.1.105",
+    "onnx": "1.16.0",
+    "onnxruntime": "1.20.1",
+    "openai": "1.65.3",
+    "openapi-core": "0.18.2",
+    "openapi-schema-validator": "0.6.3",
+    "openapi-spec-validator": "0.7.1",
+    "optimum": "1.16.2",
+    "overrides": "7.7.0",
+    "packaging": "24.2",
+    "pandas": "2.0.3",
+    "pandas-stubs": "2.1.4.231227",
+    "parse": "1.20.2",
+    "pathable": "0.4.4",
+    "patsy": "0.5.3",
+    "pgvector": "0.2.4",
+    "pillow": "10.3.0",
+    "pip": "24.0",
+    "pip-tools": "7.4.1",
+    "pluggy": "1.5.0",
+    "posthog": "3.18.1",
+    "prompt_toolkit": "3.0.50",
+    "propcache": "0.3.0",
+    "prophet": "1.1.6",
+    "proto-plus": "1.26.0",
+    "protobuf": "5.29.3",
+    "psycopg": "3.1.18",
+    "pulsar-client": "3.6.1",
+    "pyarrow": "19.0.1",
+    "pyasn1": "0.6.1",
+    "pyasn1_modules": "0.4.1",
+    "pycparser": "2.22",
+    "pydantic": "2.6.4",
+    "pydantic-xml": "2.14.2",
+    "pydantic_core": "2.16.3",
+    "pygithub": "2.1.1",
+    "pygments": "2.19.1",
+    "pyjwt": "2.10.1",
+    "pymeeus": "0.5.12",
+    "pynacl": "1.5.0",
+    "pyparsing": "3.0.9",
+    "pypika": "0.48.9",
+    "pyproject_hooks": "1.2.0",
+    "pytest": "7.4.3",
+    "pytest-alembic": "0.11.1",
+    "pytest-asyncio": "0.23.5",
+    "pytest-cov": "4.0.0",
+    "pytest-vcr": "1.0.2",
+    "python-dateutil": "2.8.2",
+    "python-dotenv": "1.0.1",
+    "pytz": "2021.3",
+    "pyyaml": "6.0.1",
+    "rapidfuzz": "3.10.1",
+    "referencing": "0.30.2",
+    "regex": "2023.8.8",
+    "requests": "2.32.2",
+    "rfc3339-validator": "0.1.4",
+    "rich": "13.9.4",
+    "rpds-py": "0.23.1",
+    "rsa": "4.9",
+    "safetensors": "0.5.3",
+    "scikit-learn": "1.3.0",
+    "scipy": "1.11.2",
+    "seaborn": "0.12.2",
+    "seer": "0.1.0",
+    "sentence-transformers": "2.3.1",
+    "sentencepiece": "0.2.0",
+    "sentry-protos": "0.1.62",
+    "sentry-sdk": "2.18.0",
+    "setuptools": "59.6.0",
+    "shapely": "2.0.7",
+    "shellingham": "1.5.4",
+    "simdkalman": "1.0.2",
+    "six": "1.16.0",
+    "sniffio": "1.3.1",
+    "sqlalchemy": "2.0.25",
+    "stanio": "0.5.1",
+    "starlette": "0.46.0",
+    "statsmodels": "0.14.0",
+    "structlog": "25.1.0",
+    "stumpy": "1.13.0",
+    "supervisor": "4.2.1",
+    "sympy": "1.12",
+    "threadpoolctl": "3.2.0",
+    "tokenizers": "0.15.2",
+    "torch": "2.2.0",
+    "tqdm": "4.66.3",
+    "transformers": "4.37.2",
+    "tree-sitter": "0.21.3",
+    "tree-sitter-languages": "1.10.2",
+    "triton": "2.2.0",
+    "tsmoothie": "1.0.5",
+    "typer": "0.15.2",
+    "types-colorama": "0.4.15.12",
+    "types-flask-migrate": "4.1.0.20250112",
+    "types-jsonschema": "4.20.0.20240105",
+    "types-openpyxl": "3.1.0.32",
+    "types-pillow": "10.1.0.0",
+    "types-python-dateutil": "2.8.19.20240106",
+    "types-pytz": "2023.3.1.1",
+    "types-pywin32": "306.0.0.8",
+    "types-pyyaml": "6.0.12.1",
+    "types-requests": "2.25.0",
+    "types-setuptools": "69.0.0.0",
+    "types-tabulate": "0.9.0.3",
+    "types-tqdm": "4.66.0.5",
+    "typing_extensions": "4.12.2",
+    "tzdata": "2023.3",
+    "unidiff": "0.7.5",
+    "urllib3": "1.26.19",
+    "uvicorn": "0.34.0",
+    "uvloop": "0.21.0",
+    "vcrpy": "6.0.2",
+    "vine": "5.1.0",
+    "watchdog": "6.0.0",
+    "watchfiles": "1.0.4",
+    "wcwidth": "0.2.13",
+    "websockets": "14.2",
+    "werkzeug": "3.0.3",
+    "wheel": "0.45.1",
+    "wrapt": "1.17.2",
+    "xxhash": "3.5.0",
+    "yarl": "1.18.3"
+  },
+  "type": "error",
+  "metadata": {
+    "filename": "seer/automation/codegen/relevant_warnings_component.py",
+    "function": "_fetch_issues_for_pr_file",
+    "in_app_frame_mix": "mixed",
+    "type": "AssertionError",
+    "value": ""
+  },
+  "tags": [
+    {
+      "key": "celery_task_id",
+      "value": "528b291f-28c6-4f9d-888d-f513cdf62462"
+    },
+    {
+      "key": "environment",
+      "value": "production"
+    },
+    {
+      "key": "handled",
+      "value": "no"
+    },
+    {
+      "key": "level",
+      "value": "error"
+    },
+    {
+      "key": "mechanism",
+      "value": "ai_monitoring"
+    },
+    {
+      "key": "release",
+      "value": "9cf62a3f6cf0751918f8d3e55b555389fe520190"
+    },
+    {
+      "key": "runtime",
+      "value": "CPython 3.11.0"
+    },
+    {
+      "key": "runtime.name",
+      "value": "CPython"
+    },
+    {
+      "key": "server_name",
+      "value": "seer-web-autofix-5667c75569-nldjf"
+    },
+    {
+      "key": "transaction",
+      "value": "seer.automation.codegen.relevant_warnings_step.relevant_warnings_task"
+    }
+  ],
+  "platform": "python",
+  "dateReceived": "2025-03-10T22:56:03.987224Z",
+  "errors": [],
+  "occurrence": null,
+  "_meta": {
+    "entries": {
+      "0": {
+        "data": {
+          "values": {
+            "0": {
+              "": null,
+              "type": null,
+              "value": null,
+              "mechanism": null,
+              "threadId": null,
+              "module": null,
+              "stacktrace": {
+                "": null,
+                "frames": {
+                  "0": {
+                    "vars": {
+                      "": {
+                        "len": 10
+                      },
+                      "fetch_issues_request": {
+                        "": {
+                          "rem": [
+                            [
+                              "@password:filter",
+                              "s",
+                              0,
+                              10
+                            ]
+                          ],
+                          "len": 1024,
+                          "chunks": [
+                            {
+                              "type": "redaction",
+                              "text": "[Filtered]",
+                              "rule_id": "@password:filter",
+                              "remark": "s"
+                            }
+                          ]
+                        }
+                      },
+                      "filter_warnings_request": {
+                        "": {
+                          "rem": [
+                            [
+                              "!limit",
+                              "s",
+                              574,
+                              577
+                            ]
+                          ],
+                          "len": 1024,
+                          "chunks": [
+                            {
+                              "type": "text",
+                              "text": "FilterWarningsRequest(warnings=[StaticAnalysisWarning(id=95579, code='class.notFound', message='PHPDoc tag @mixin contains unknown class Eloquent.', encoded_location='app/Models/Role.php:18', rule_id=1295, rule=None), StaticAnalysisWarning(id=95580, code='class.notFound', message='Parameter $results of method App\\\\Jobs\\\\Notifier::__construct() has invalid type App\\\\Jobs\\\\NotificationSegmentDTO.', encoded_location='app/Jobs/Notifier.php:39', rule_id=1295, rule=None), StaticAnalysisWarning(id=95581, code='class.notFound', message='Property App\\\\Jobs\\\\Notifier::$results "
+                            },
+                            {
+                              "type": "redaction",
+                              "text": "...",
+                              "rule_id": "!limit",
+                              "remark": "s"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "1": {
+                    "vars": {
+                      "args": {
+                        "1": {
+                          "": {
+                            "rem": [
+                              [
+                                "@password:filter",
+                                "s",
+                                0,
+                                10
+                              ]
+                            ],
+                            "len": 1024,
+                            "chunks": [
+                              {
+                                "type": "redaction",
+                                "text": "[Filtered]",
+                                "rule_id": "@password:filter",
+                                "remark": "s"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "3": {
+                    "vars": {
+                      "args": {
+                        "1": {
+                          "": {
+                            "rem": [
+                              [
+                                "@password:filter",
+                                "s",
+                                0,
+                                10
+                              ]
+                            ],
+                            "len": 1024,
+                            "chunks": [
+                              {
+                                "type": "redaction",
+                                "text": "[Filtered]",
+                                "rule_id": "@password:filter",
+                                "remark": "s"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "4": {
+                    "vars": {
+                      "request": {
+                        "": {
+                          "rem": [
+                            [
+                              "@password:filter",
+                              "s",
+                              0,
+                              10
+                            ]
+                          ],
+                          "len": 1024,
+                          "chunks": [
+                            {
+                              "type": "redaction",
+                              "text": "[Filtered]",
+                              "rule_id": "@password:filter",
+                              "remark": "s"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "5": {
+                    "vars": {
+                      "": {
+                        "len": 8
+                      },
+                      "pr_files": {
+                        "0": {
+                          "": {
+                            "rem": [
+                              [
+                                "@password:filter",
+                                "s",
+                                0,
+                                10
+                              ]
+                            ],
+                            "len": 1024,
+                            "chunks": [
+                              {
+                                "type": "redaction",
+                                "text": "[Filtered]",
+                                "rule_id": "@password:filter",
+                                "remark": "s"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      "pr_files_eligible": {
+                        "0": {
+                          "": {
+                            "rem": [
+                              [
+                                "@password:filter",
+                                "s",
+                                0,
+                                10
+                              ]
+                            ],
+                            "len": 1024,
+                            "chunks": [
+                              {
+                                "type": "redaction",
+                                "text": "[Filtered]",
+                                "rule_id": "@password:filter",
+                                "remark": "s"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "6": {
+                    "vars": {
+                      "pr_file": {
+                        "": {
+                          "rem": [
+                            [
+                              "@password:filter",
+                              "s",
+                              0,
+                              10
+                            ]
+                          ],
+                          "len": 1024,
+                          "chunks": [
+                            {
+                              "type": "redaction",
+                              "text": "[Filtered]",
+                              "rule_id": "@password:filter",
+                              "remark": "s"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "7": {
+                    "vars": {
+                      "": {
+                        "len": 6
+                      },
+                      "args": {
+                        "3": {
+                          "": {
+                            "rem": [
+                              [
+                                "@password:filter",
+                                "s",
+                                0,
+                                10
+                              ]
+                            ],
+                            "len": 1024,
+                            "chunks": [
+                              {
+                                "type": "redaction",
+                                "text": "[Filtered]",
+                                "rule_id": "@password:filter",
+                                "remark": "s"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      "cache": {
+                        "": {
+                          "len": 6
+                        },
+                        "(26192, 'integrations:github', '667550736', 'upload/views/test_results.py', '4d8a4986b7006385b59f422af5e2d4309971b9b3')": {
+                          "0": {
+                            "": {
+                              "len": 4
+                            },
+                            "events": {
+                              "": {
+                                "rem": [
+                                  [
+                                    "!limit",
+                                    "s",
+                                    890,
+                                    893
+                                  ]
+                                ],
+                                "len": 1033,
+                                "chunks": [
+                                  {
+                                    "type": "text",
+                                    "text": "[\"{'id': '38fc792770d04265bd88ac1dd954f98c', 'groupID': '5919622537', 'eventID': '38fc792770d04265bd88ac1dd954f98c', 'projectID': '5215654', 'size': 49581, 'entries': [{'data': {'values': [{'type': 'OperationalError', 'value': 'server closed the connection unexpectedly\\\\n\\\\tThis probably means the server terminated abnormally\\\\n\\\\tbefore or while processing the request.\\\\n', 'mechanism': {'type': 'django', 'handled': False}, 'threadId': None, 'module': 'psycopg2', 'stacktrace': {'frames': [{'filename': 'django/db/backends/utils.py', 'absPath': '/usr/local/lib/python3.12/site-packages/django/db/backends/utils.py', 'module': 'django.db.backends.utils', 'package': None, 'platform': None, 'instructionAddr': None, 'symbolAddr': None, 'function': '_execute', 'rawFunction': None, 'symbol': None, 'context': [[84, '        with self.db.wrap_database_errors:'], [85, '            if param"
+                                  },
+                                  {
+                                    "type": "redaction",
+                                    "text": "...",
+                                    "rule_id": "!limit",
+                                    "remark": "s"
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "8": {
+                    "vars": {
+                      "args": {
+                        "3": {
+                          "": {
+                            "rem": [
+                              [
+                                "@password:filter",
+                                "s",
+                                0,
+                                10
+                              ]
+                            ],
+                            "len": 1024,
+                            "chunks": [
+                              {
+                                "type": "redaction",
+                                "text": "[Filtered]",
+                                "rule_id": "@password:filter",
+                                "remark": "s"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "9": {
+                    "vars": {
+                      "pr_file": {
+                        "": {
+                          "rem": [
+                            [
+                              "@password:filter",
+                              "s",
+                              0,
+                              10
+                            ]
+                          ],
+                          "len": 1024,
+                          "chunks": [
+                            {
+                              "type": "redaction",
+                              "text": "[Filtered]",
+                              "rule_id": "@password:filter",
+                              "remark": "s"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                "framesOmitted": null,
+                "registers": null
+              }
+            }
+          }
+        }
+      },
+      "1": {
+        "data": {
+          "values": {
+            "13": {
+              "data": {
+                "url": {
+                  "": {
+                    "rem": [
+                      [
+                        "@password:filter",
+                        "s",
+                        0,
+                        10
+                      ]
+                    ],
+                    "len": 63,
+                    "chunks": [
+                      {
+                        "type": "redaction",
+                        "text": "[Filtered]",
+                        "rule_id": "@password:filter",
+                        "remark": "s"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "message": null,
+    "user": null,
+    "contexts": null,
+    "sdk": null,
+    "context": {
+      "celery-job": {
+        "kwargs": {
+          "request": {
+            "": {
+              "len": 11
+            },
+            "repo": {
+              "base_commit_sha": {
+                "": {
+                  "rem": [
+                    [
+                      "!limit",
+                      "x"
+                    ]
+                  ],
+                  "chunks": [
+                    {
+                      "type": "text",
+                      "text": "None"
+                    }
+                  ]
+                }
+              },
+              "external_id": {
+                "": {
+                  "rem": [
+                    [
+                      "!limit",
+                      "x"
+                    ]
+                  ],
+                  "chunks": [
+                    {
+                      "type": "text",
+                      "text": "'904533877'"
+                    }
+                  ]
+                }
+              },
+              "name": {
+                "": {
+                  "rem": [
+                    [
+                      "!limit",
+                      "x"
+                    ]
+                  ],
+                  "chunks": [
+                    {
+                      "type": "text",
+                      "text": "'overwatch'"
+                    }
+                  ]
+                }
+              },
+              "owner": {
+                "": {
+                  "rem": [
+                    [
+                      "!limit",
+                      "x"
+                    ]
+                  ],
+                  "chunks": [
+                    {
+                      "type": "text",
+                      "text": "'codecov'"
+                    }
+                  ]
+                }
+              },
+              "provider": {
+                "": {
+                  "rem": [
+                    [
+                      "!limit",
+                      "x"
+                    ]
+                  ],
+                  "chunks": [
+                    {
+                      "type": "text",
+                      "text": "'github'"
+                    }
+                  ]
+                }
+              },
+              "provider_raw": {
+                "": {
+                  "rem": [
+                    [
+                      "!limit",
+                      "x"
+                    ]
+                  ],
+                  "chunks": [
+                    {
+                      "type": "text",
+                      "text": "'integrations:github'"
+                    }
+                  ]
+                }
+              }
+            },
+            "warnings": {
+              "0": {
+                "": {
+                  "rem": [
+                    [
+                      "!limit",
+                      "x"
+                    ]
+                  ],
+                  "chunks": [
+                    {
+                      "type": "text",
+                      "text": "{'id': 95579, 'code': 'class.notFound', 'message': 'PHPDoc tag @mixin contains unknown class Eloquent.', 'encoded_location': 'app/Models/Role.php:18', 'rule_id': 1295, 'rule': None}"
+                    }
+                  ]
+                }
+              },
+              "1": {
+                "": {
+                  "rem": [
+                    [
+                      "!limit",
+                      "x"
+                    ]
+                  ],
+                  "chunks": [
+                    {
+                      "type": "text",
+                      "text": "{'id': 95580, 'code': 'class.notFound', 'message': 'Parameter $results of method App\\\\Jobs\\\\Notifier::__construct() has invalid type App\\\\Jobs\\\\NotificationSegmentDTO.', 'encoded_location': 'app/Jobs/Notifier.php:39', 'rule_id': 1295, 'rule': None}"
+                    }
+                  ]
+                }
+              },
+              "2": {
+                "": {
+                  "rem": [
+                    [
+                      "!limit",
+                      "x"
+                    ]
+                  ],
+                  "chunks": [
+                    {
+                      "type": "text",
+                      "text": "{'id': 95581, 'code': 'class.notFound', 'message': 'Property App\\\\Jobs\\\\Notifier::$results has unknown class App\\\\Jobs\\\\NotificationSegmentDTO as its type.', 'encoded_location': 'app/Jobs/Notifier.php:39', 'rule_id': 1295, 'rule': None}"
+                    }
+                  ]
+                }
+              },
+              "3": {
+                "": {
+                  "rem": [
+                    [
+                      "!limit",
+                      "x"
+                    ]
+                  ],
+                  "chunks": [
+                    {
+                      "type": "text",
+                      "text": "{'id': 95582, 'code': 'class.notFound', 'message': 'Access to property $relevanceProbability on an unknown class App\\\\Jobs\\\\NotificationSegmentDTO.', 'encoded_location': 'app/Jobs/Notifier.php:131', 'rule_id': 1295, 'rule': None}"
+                    }
+                  ]
+                }
+              },
+              "4": {
+                "": {
+                  "rem": [
+                    [
+                      "!limit",
+                      "x"
+                    ]
+                  ],
+                  "chunks": [
+                    {
+                      "type": "text",
+                      "text": "{'id': 95583, 'code': 'class.notFound', 'message': 'Access to property $encodedLocation on an unknown class App\\\\Jobs\\\\NotificationSegmentDTO.', 'encoded_location': 'app/Jobs/Notifier.php:142', 'rule_id': 1295, 'rule': None}"
+                    }
+                  ]
+                }
+              },
+              "5": {
+                "": {
+                  "rem": [
+                    [
+                      "!limit",
+                      "x"
+                    ]
+                  ],
+                  "chunks": [
+                    {
+                      "type": "text",
+                      "text": "{'id': 95584, 'code': 'class.notFound', 'message': 'Access to property $shortDescription on an unknown class App\\\\Jobs\\\\NotificationSegmentDTO.', 'encoded_location': 'app/Jobs/Notifier.php:151', 'rule_id': 1295, 'rule': None}"
+                    }
+                  ]
+                }
+              },
+              "6": {
+                "": {
+                  "rem": [
+                    [
+                      "!limit",
+                      "x"
+                    ]
+                  ],
+                  "chunks": [
+                    {
+                      "type": "text",
+                      "text": "{'id': 95585, 'code': 'class.notFound', 'message': 'Access to property $shortJustification on an unknown class App\\\\Jobs\\\\NotificationSegmentDTO.', 'encoded_location': 'app/Jobs/Notifier.php:152', 'rule_id': 1295, 'rule': None}"
+                    }
+                  ]
+                }
+              },
+              "7": {
+                "": {
+                  "rem": [
+                    [
+                      "!limit",
+                      "x"
+                    ]
+                  ],
+                  "chunks": [
+                    {
+                      "type": "text",
+                      "text": "{'id': 95586, 'code': 'class.notFound', 'message': 'Parameter $individual_results of method App\\\\DTOs\\\\UploadResultContextDTO::__construct() has invalid type App\\\\DTOs\\\\IndividualResultContextDTO.', 'encoded_location': 'app/DTOs/ProcessUploadResultDTO.php:50', 'rule_id': 1295, 'rule': None}"
+                    }
+                  ]
+                }
+              },
+              "8": {
+                "": {
+                  "rem": [
+                    [
+                      "!limit",
+                      "x"
+                    ]
+                  ],
+                  "chunks": [
+                    {
+                      "type": "text",
+                      "text": "{'id': 95587, 'code': 'class.notFound', 'message': 'Property App\\\\DTOs\\\\UploadResultContextDTO::$individual_results has unknown class App\\\\DTOs\\\\IndividualResultContextDTO as its type.', 'encoded_location': 'app/DTOs/ProcessUploadResultDTO.php:50', 'rule_id': 1295, 'rule': None}"
+                    }
+                  ]
+                }
+              },
+              "9": {
+                "": {
+                  "rem": [
+                    [
+                      "!limit",
+                      "x"
+                    ]
+                  ],
+                  "chunks": [
+                    {
+                      "type": "text",
+                      "text": "{'id': 95588, 'code': 'class.notFound', 'message': 'Call to method toArray() on an unknown class App\\\\DTOs\\\\IndividualResultContextDTO.', 'encoded_location': 'app/DTOs/ProcessUploadResultDTO.php:77', 'rule_id': 1295, 'rule': None}"
+                    }
+                  ]
+                }
+              },
+              "": {
+                "len": 297
+              }
+            }
+          }
+        }
+      }
+    },
+    "packages": null,
+    "tags": {}
+  },
+  "crashFile": null,
+  "culprit": "seer.automation.codegen.relevant_warnings_step.relevant_warnings_task",
+  "dateCreated": "2025-03-10T22:56:03.961270Z",
+  "fingerprints": [
+    "d3196e7860f0c2529b61b6763b1a80d8",
+    "8e02077a60101381f788b48257d96221"
+  ],
+  "groupingConfig": {
+    "enhancements": "KLUv_SAYwQAAkwKRs25ld3N0eWxlOjIwMjMtMDEtMTGQ",
+    "id": "newstyle:2023-01-11"
+  },
+  "release": {
+    "id": 1374625399,
+    "version": "9cf62a3f6cf0751918f8d3e55b555389fe520190",
+    "status": "open",
+    "shortVersion": "9cf62a3f6cf0751918f8d3e55b555389fe520190",
+    "versionInfo": {
+      "package": null,
+      "version": {
+        "raw": "9cf62a3f6cf0751918f8d3e55b555389fe520190"
+      },
+      "description": "9cf62a3f6cf0",
+      "buildHash": "9cf62a3f6cf0751918f8d3e55b555389fe520190"
+    },
+    "ref": null,
+    "url": null,
+    "dateReleased": "2025-03-10T21:33:05.207722Z",
+    "dateCreated": "2025-03-10T21:24:59.257047Z",
+    "data": {},
+    "newGroups": 2,
+    "owner": null,
+    "commitCount": 0,
+    "lastCommit": null,
+    "deployCount": 1,
+    "lastDeploy": {
+      "id": "68006022",
+      "environment": "production",
+      "dateStarted": null,
+      "dateFinished": "2025-03-10T21:33:04.879396Z",
+      "name": null,
+      "url": null
+    },
+    "authors": [],
+    "projects": [
+      {
+        "id": 6178942,
+        "slug": "seer",
+        "name": "seer",
+        "newGroups": 2,
+        "platform": "python-flask",
+        "platforms": [
+          "other",
+          "python"
+        ],
+        "hasHealthData": false
+      }
+    ],
+    "firstEvent": "2025-03-10T21:26:40Z",
+    "lastEvent": "2025-03-10T23:17:49Z",
+    "currentProjectMeta": {},
+    "userAgent": null
+  },
+  "userReport": null,
+  "sdkUpdates": [],
+  "resolvedWith": [],
+  "nextEventID": "b45455a464d3485490d891d732b565ff",
+  "previousEventID": "3f0700e24b5e402eb86bba7cecb1be9c"
+}

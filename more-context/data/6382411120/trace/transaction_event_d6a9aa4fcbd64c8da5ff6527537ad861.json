@@ -1,0 +1,622 @@
+{
+  "id": "d6a9aa4fcbd64c8da5ff6527537ad861",
+  "groupID": null,
+  "eventID": "d6a9aa4fcbd64c8da5ff6527537ad861",
+  "projectID": "6178942",
+  "size": 13774,
+  "entries": [
+    {
+      "data": [
+        {
+          "timestamp": 1741647725.138895,
+          "start_timestamp": 1741647725.13642,
+          "exclusive_time": 2.475,
+          "op": "db",
+          "span_id": "a1c91a25c0f52170",
+          "parent_span_id": "91980d3aa13ecab2",
+          "trace_id": "61925d1e34a84b18aa28eddf0d3916b3",
+          "description": "INSERT INTO run_state (group_id,\n               type, value, last_triggered_at, updated_at)\nVALUES (%(group_id)s::BIGINT, %(type)s::VARCHAR, %(value)s::JSON, %(last_triggered_at)s::TIMESTAMP WITHOUT TIME ZONE, %(updated_at)s::TIMESTAMP WITHOUT TIME ZONE) RETURNING run_state.id",
+          "origin": "auto.db.sqlalchemy",
+          "data": {
+            "db.system": "postgresql",
+            "server.address": "127.0.0.1",
+            "thread.name": "MainThread",
+            "thread.id": "136872209937536",
+            "db.name": "seer",
+            "server.port": 6432
+          },
+          "sentry_tags": {
+            "release": "9cf62a3f6cf0751918f8d3e55b555389fe520190",
+            "user": "ip:10.2.1.163",
+            "user.ip": "10.2.1.163",
+            "environment": "production",
+            "transaction": "app.codegen_relevant_warnings_endpoint",
+            "transaction.method": "POST",
+            "transaction.op": "http.server",
+            "sdk.name": "sentry.python.flask",
+            "sdk.version": "2.18.0",
+            "platform": "python",
+            "action": "INSERT",
+            "category": "db",
+            "description": "INSERT INTO run_state (..) VALUES (%s WITHOUT TIME ZONE, %s WITHOUT TIME ZONE) RETURNING id",
+            "domain": "run_state",
+            "group": "fed898792353481e",
+            "op": "db",
+            "system": "postgresql",
+            "trace.status": "ok",
+            "thread.name": "MainThread",
+            "thread.id": "136872209937536"
+          },
+          "hash": "b9c35cbfb4695645",
+          "same_process_as_parent": true
+        },
+        {
+          "timestamp": 1741647725.140688,
+          "start_timestamp": 1741647725.139421,
+          "exclusive_time": 1.267,
+          "op": "db",
+          "span_id": "8cb429083f695bdd",
+          "parent_span_id": "91980d3aa13ecab2",
+          "trace_id": "61925d1e34a84b18aa28eddf0d3916b3",
+          "description": "UPDATE run_state\nSET value=%(value)s::JSON\nWHERE run_state.id = %(run_state_id)s::INTEGER",
+          "origin": "auto.db.sqlalchemy",
+          "data": {
+            "db.system": "postgresql",
+            "server.address": "127.0.0.1",
+            "thread.name": "MainThread",
+            "thread.id": "136872209937536",
+            "db.name": "seer",
+            "server.port": 6432
+          },
+          "sentry_tags": {
+            "release": "9cf62a3f6cf0751918f8d3e55b555389fe520190",
+            "user": "ip:10.2.1.163",
+            "user.ip": "10.2.1.163",
+            "environment": "production",
+            "transaction": "app.codegen_relevant_warnings_endpoint",
+            "transaction.method": "POST",
+            "transaction.op": "http.server",
+            "sdk.name": "sentry.python.flask",
+            "sdk.version": "2.18.0",
+            "platform": "python",
+            "action": "UPDATE",
+            "category": "db",
+            "description": "UPDATE run_state SET value=%s WHERE id = %s",
+            "domain": "run_state",
+            "group": "a48afc24dc88ebd3",
+            "op": "db",
+            "system": "postgresql",
+            "trace.status": "ok",
+            "thread.name": "MainThread",
+            "thread.id": "136872209937536"
+          },
+          "hash": "2bdc28b6fc3ceea1",
+          "same_process_as_parent": true
+        },
+        {
+          "timestamp": 1741647725.14578,
+          "start_timestamp": 1741647725.143472,
+          "exclusive_time": 2.308,
+          "op": "db",
+          "span_id": "abea8a7ca0ef0e88",
+          "parent_span_id": "91980d3aa13ecab2",
+          "trace_id": "61925d1e34a84b18aa28eddf0d3916b3",
+          "description": "SELECT run_state.id, run_state.group_id, run_state.type, run_state.value,\n       run_state.last_triggered_at, run_state.updated_at\nFROM run_state\nWHERE run_state.id = %(id_1)s::INTEGER\n  FOR\n  UPDATE",
+          "origin": "auto.db.sqlalchemy",
+          "data": {
+            "db.system": "postgresql",
+            "server.address": "127.0.0.1",
+            "thread.name": "MainThread",
+            "thread.id": "136872209937536",
+            "db.name": "seer",
+            "server.port": 6432
+          },
+          "sentry_tags": {
+            "release": "9cf62a3f6cf0751918f8d3e55b555389fe520190",
+            "user": "ip:10.2.1.163",
+            "user.ip": "10.2.1.163",
+            "environment": "production",
+            "transaction": "app.codegen_relevant_warnings_endpoint",
+            "transaction.method": "POST",
+            "transaction.op": "http.server",
+            "sdk.name": "sentry.python.flask",
+            "sdk.version": "2.18.0",
+            "platform": "python",
+            "action": "SELECT",
+            "category": "db",
+            "description": "SELECT .. FROM run_state WHERE id = %s FOR UPDATE",
+            "domain": "run_state",
+            "group": "5fba5a2dff06b29a",
+            "op": "db",
+            "system": "postgresql",
+            "trace.status": "ok",
+            "thread.name": "MainThread",
+            "thread.id": "136872209937536"
+          },
+          "hash": "6767780e6d4ebd3b",
+          "same_process_as_parent": true
+        },
+        {
+          "timestamp": 1741647725.147678,
+          "start_timestamp": 1741647725.14639,
+          "exclusive_time": 1.288,
+          "op": "db",
+          "span_id": "985ee265ecb6514b",
+          "parent_span_id": "91980d3aa13ecab2",
+          "trace_id": "61925d1e34a84b18aa28eddf0d3916b3",
+          "description": "UPDATE run_state\nSET value=%(value)s::JSON, last_triggered_at=%(last_triggered_at)s::TIMESTAMP WITHOUT TIME ZONE,\n                                                                                           updated_at=%(updated_at)s::TIMESTAMP WITHOUT TIME ZONE\nWHERE run_state.id = %(run_state_id)s::INTEGER",
+          "origin": "auto.db.sqlalchemy",
+          "data": {
+            "db.system": "postgresql",
+            "server.address": "127.0.0.1",
+            "thread.name": "MainThread",
+            "thread.id": "136872209937536",
+            "db.name": "seer",
+            "server.port": 6432
+          },
+          "sentry_tags": {
+            "release": "9cf62a3f6cf0751918f8d3e55b555389fe520190",
+            "user": "ip:10.2.1.163",
+            "user.ip": "10.2.1.163",
+            "environment": "production",
+            "transaction": "app.codegen_relevant_warnings_endpoint",
+            "transaction.method": "POST",
+            "transaction.op": "http.server",
+            "sdk.name": "sentry.python.flask",
+            "sdk.version": "2.18.0",
+            "platform": "python",
+            "action": "UPDATE",
+            "category": "db",
+            "description": "UPDATE run_state SET value=%s, last_triggered_at=%s WITHOUT TIME ZONE, updated_at=%s WITHOUT TIME ZONE WHERE id = %s",
+            "domain": "run_state",
+            "group": "c36cfd23da98798d",
+            "op": "db",
+            "system": "postgresql",
+            "trace.status": "ok",
+            "thread.name": "MainThread",
+            "thread.id": "136872209937536"
+          },
+          "hash": "53de4f618573328d",
+          "same_process_as_parent": true
+        },
+        {
+          "timestamp": 1741647725.152624,
+          "start_timestamp": 1741647725.150369,
+          "exclusive_time": 2.255,
+          "op": "db",
+          "span_id": "97ceb2b73655985e",
+          "parent_span_id": "91980d3aa13ecab2",
+          "trace_id": "61925d1e34a84b18aa28eddf0d3916b3",
+          "description": "SELECT run_state.id AS run_state_id, run_state.group_id AS run_state_group_id,\n       run_state.type AS run_state_type, run_state.value AS run_state_value,\n       run_state.last_triggered_at AS run_state_last_triggered_at, run_state.updated_at AS run_state_updated_at\nFROM run_state\nWHERE run_state.id = %(pk_1)s::INTEGER",
+          "origin": "auto.db.sqlalchemy",
+          "data": {
+            "db.system": "postgresql",
+            "server.address": "127.0.0.1",
+            "thread.name": "MainThread",
+            "thread.id": "136872209937536",
+            "db.name": "seer",
+            "server.port": 6432
+          },
+          "sentry_tags": {
+            "release": "9cf62a3f6cf0751918f8d3e55b555389fe520190",
+            "user": "ip:10.2.1.163",
+            "user.ip": "10.2.1.163",
+            "environment": "production",
+            "transaction": "app.codegen_relevant_warnings_endpoint",
+            "transaction.method": "POST",
+            "transaction.op": "http.server",
+            "sdk.name": "sentry.python.flask",
+            "sdk.version": "2.18.0",
+            "platform": "python",
+            "action": "SELECT",
+            "category": "db",
+            "description": "SELECT .. FROM run_state WHERE id = %s",
+            "domain": "run_state",
+            "group": "af8fcec03969c601",
+            "op": "db",
+            "system": "postgresql",
+            "trace.status": "ok",
+            "thread.name": "MainThread",
+            "thread.id": "136872209937536"
+          },
+          "hash": "40ac0df86d38985d",
+          "same_process_as_parent": true
+        },
+        {
+          "timestamp": 1741647725.15769,
+          "start_timestamp": 1741647725.154723,
+          "exclusive_time": 0.104,
+          "op": "queue.submit.celery",
+          "span_id": "b4452823f69e8def",
+          "parent_span_id": "91980d3aa13ecab2",
+          "trace_id": "61925d1e34a84b18aa28eddf0d3916b3",
+          "description": "seer.automation.codegen.relevant_warnings_step.relevant_warnings_task",
+          "origin": "auto.queue.celery",
+          "data": {
+            "thread.name": "MainThread",
+            "thread.id": "136872209937536"
+          },
+          "sentry_tags": {
+            "release": "9cf62a3f6cf0751918f8d3e55b555389fe520190",
+            "user": "ip:10.2.1.163",
+            "user.ip": "10.2.1.163",
+            "environment": "production",
+            "transaction": "app.codegen_relevant_warnings_endpoint",
+            "transaction.method": "POST",
+            "transaction.op": "http.server",
+            "sdk.name": "sentry.python.flask",
+            "sdk.version": "2.18.0",
+            "platform": "python",
+            "category": "queue",
+            "op": "queue.submit.celery",
+            "trace.status": "ok",
+            "thread.name": "MainThread",
+            "thread.id": "136872209937536"
+          },
+          "hash": "d9811611e46f7af6",
+          "same_process_as_parent": true
+        },
+        {
+          "timestamp": 1741647725.157685,
+          "start_timestamp": 1741647725.154822,
+          "exclusive_time": 2.017,
+          "op": "queue.submit.celery",
+          "span_id": "981ddc0cdec1b8b7",
+          "parent_span_id": "b4452823f69e8def",
+          "trace_id": "61925d1e34a84b18aa28eddf0d3916b3",
+          "description": "seer.automation.codegen.relevant_warnings_step.relevant_warnings_task",
+          "origin": "auto.queue.celery",
+          "data": {
+            "thread.name": "MainThread",
+            "thread.id": "136872209937536"
+          },
+          "sentry_tags": {
+            "release": "9cf62a3f6cf0751918f8d3e55b555389fe520190",
+            "user": "ip:10.2.1.163",
+            "user.ip": "10.2.1.163",
+            "environment": "production",
+            "transaction": "app.codegen_relevant_warnings_endpoint",
+            "transaction.method": "POST",
+            "transaction.op": "http.server",
+            "sdk.name": "sentry.python.flask",
+            "sdk.version": "2.18.0",
+            "platform": "python",
+            "category": "queue",
+            "op": "queue.submit.celery",
+            "trace.status": "ok",
+            "thread.name": "MainThread",
+            "thread.id": "136872209937536"
+          },
+          "hash": "d9811611e46f7af6",
+          "same_process_as_parent": true
+        },
+        {
+          "timestamp": 1741647725.157416,
+          "start_timestamp": 1741647725.15657,
+          "exclusive_time": 0.846,
+          "op": "queue.publish",
+          "span_id": "b22dde2e6bb3ee07",
+          "parent_span_id": "981ddc0cdec1b8b7",
+          "trace_id": "61925d1e34a84b18aa28eddf0d3916b3",
+          "description": "seer.automation.codegen.relevant_warnings_step.relevant_warnings_task",
+          "origin": "auto.queue.celery",
+          "data": {
+            "thread.name": "MainThread",
+            "thread.id": "136872209937536",
+            "messaging.destination.name": "seer-autofix",
+            "messaging.message.retry.count": 0,
+            "messaging.message.id": "c07161b9-7cc2-4ea7-be5d-20231ed1c1fb",
+            "messaging.system": "amqp"
+          },
+          "sentry_tags": {
+            "release": "9cf62a3f6cf0751918f8d3e55b555389fe520190",
+            "user": "ip:10.2.1.163",
+            "user.ip": "10.2.1.163",
+            "environment": "production",
+            "transaction": "app.codegen_relevant_warnings_endpoint",
+            "transaction.method": "POST",
+            "transaction.op": "http.server",
+            "sdk.name": "sentry.python.flask",
+            "sdk.version": "2.18.0",
+            "platform": "python",
+            "category": "queue",
+            "op": "queue.publish",
+            "trace.status": "ok",
+            "messaging.destination.name": "seer-autofix",
+            "messaging.message.id": "c07161b9-7cc2-4ea7-be5d-20231ed1c1fb",
+            "thread.name": "MainThread",
+            "thread.id": "136872209937536"
+          },
+          "measurements": {
+            "messaging.message.retry.count": {
+              "value": 0,
+              "unit": "none"
+            }
+          },
+          "hash": "d9811611e46f7af6",
+          "same_process_as_parent": true
+        }
+      ],
+      "type": "spans"
+    },
+    {
+      "data": {
+        "apiTarget": null,
+        "method": "POST",
+        "url": "http://overwatch-seer-proxy.codecov.dev:8081/v1/automation/codegen/relevant-warnings",
+        "query": [],
+        "fragment": null,
+        "data": "",
+        "headers": [
+          [
+            "Accept",
+            "application/json"
+          ],
+          [
+            "Authorization",
+            "[Filtered]"
+          ],
+          [
+            "Baggage",
+            "sentry-trace_id=61925d1e34a84b18aa28eddf0d3916b3,sentry-sample_rate=1,sentry-transaction=test,sentry-public_key=20f852c5d7f2349d6b4fbe7376d63fe1,sentry-environment=staging,sentry-sampled=true"
+          ],
+          [
+            "Content-Length",
+            "119413"
+          ],
+          [
+            "Content-Type",
+            "application/json"
+          ],
+          [
+            "Host",
+            "overwatch-seer-proxy.codecov.dev:8081"
+          ],
+          [
+            "Sentry-Trace",
+            "61925d1e34a84b18aa28eddf0d3916b3-1ef49de5127147ca-1"
+          ],
+          [
+            "Traceparent",
+            "00-61925d1e34a84b18aa28eddf0d3916b3-1ef49de5127147ca-01"
+          ],
+          [
+            "User-Agent",
+            "GuzzleHttp/7"
+          ]
+        ],
+        "cookies": [],
+        "env": {
+          "REMOTE_ADDR": "10.2.1.163",
+          "SERVER_NAME": "0.0.0.0",
+          "SERVER_PORT": "8081"
+        },
+        "inferredContentType": "application/json"
+      },
+      "type": "request"
+    }
+  ],
+  "dist": null,
+  "message": "",
+  "title": "app.codegen_relevant_warnings_endpoint",
+  "location": "app.codegen_relevant_warnings_endpoint",
+  "user": {
+    "id": null,
+    "email": null,
+    "username": null,
+    "ip_address": "10.2.1.163",
+    "name": null,
+    "geo": null,
+    "data": null
+  },
+  "contexts": {
+    "profile": {
+      "profile_id": "a5249b7e709e43fd88b1c44ab5a7ffa0",
+      "type": "default"
+    },
+    "response": {
+      "status_code": 200,
+      "type": "default"
+    },
+    "runtime": {
+      "runtime": "CPython 3.11.0",
+      "name": "CPython",
+      "version": "3.11.0",
+      "build": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+      "type": "runtime"
+    },
+    "trace": {
+      "trace_id": "61925d1e34a84b18aa28eddf0d3916b3",
+      "span_id": "91980d3aa13ecab2",
+      "parent_span_id": "1ef49de5127147ca",
+      "op": "http.server",
+      "status": "ok",
+      "exclusive_time": 112.902,
+      "client_sample_rate": 1,
+      "origin": "auto.http.flask",
+      "data": {
+        "http.response.status_code": 200,
+        "thread.name": "MainThread",
+        "thread.id": "136872209937536"
+      },
+      "hash": "090a7191bdf30916",
+      "type": "trace"
+    }
+  },
+  "sdk": {
+    "name": "sentry.python.flask",
+    "version": "2.18.0"
+  },
+  "context": {
+    "sys.argv": [
+      "/usr/local/bin/gunicorn",
+      "--bind",
+      ":8081",
+      "--worker-class",
+      "sync",
+      "--threads",
+      "1",
+      "--timeout",
+      "0",
+      "--logger-class"
+    ]
+  },
+  "packages": {},
+  "type": "transaction",
+  "metadata": {
+    "location": "app.codegen_relevant_warnings_endpoint",
+    "title": "app.codegen_relevant_warnings_endpoint"
+  },
+  "tags": [
+    {
+      "key": "environment",
+      "value": "production"
+    },
+    {
+      "key": "http.status_code",
+      "value": "200"
+    },
+    {
+      "key": "level",
+      "value": "info"
+    },
+    {
+      "key": "release",
+      "value": "9cf62a3f6cf0751918f8d3e55b555389fe520190"
+    },
+    {
+      "key": "runtime",
+      "value": "CPython 3.11.0"
+    },
+    {
+      "key": "runtime.name",
+      "value": "CPython"
+    },
+    {
+      "key": "server_name",
+      "value": "seer-web-autofix-5667c75569-nldjf"
+    },
+    {
+      "key": "transaction",
+      "value": "app.codegen_relevant_warnings_endpoint"
+    },
+    {
+      "key": "url",
+      "value": "http://overwatch-seer-proxy.codecov.dev:8081/v1/automation/codegen/relevant-warnings"
+    },
+    {
+      "key": "user",
+      "value": "ip:10.2.1.163",
+      "query": "user.ip:\"10.2.1.163\""
+    }
+  ],
+  "platform": "python",
+  "dateReceived": "2025-03-10T23:02:05.180694Z",
+  "errors": [],
+  "occurrence": null,
+  "_meta": {
+    "entries": {
+      "1": {
+        "data": {
+          "": null,
+          "apiTarget": null,
+          "method": null,
+          "url": null,
+          "query": null,
+          "data": {
+            "": {
+              "rem": [
+                [
+                  "!config",
+                  "x"
+                ]
+              ],
+              "chunks": []
+            }
+          },
+          "headers": {
+            "1": {
+              "1": {
+                "": {
+                  "rem": [
+                    [
+                      "!config",
+                      "s"
+                    ]
+                  ],
+                  "chunks": [
+                    {
+                      "type": "text",
+                      "text": "[Filtered]"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "cookies": null,
+          "env": null
+        }
+      }
+    },
+    "message": null,
+    "user": null,
+    "contexts": null,
+    "sdk": null,
+    "context": {
+      "sys.argv": {
+        "": {
+          "len": 14
+        }
+      }
+    },
+    "packages": null,
+    "tags": {}
+  },
+  "startTimestamp": 1741647725.032531,
+  "endTimestamp": 1741647725.157993,
+  "measurements": null,
+  "breakdowns": {
+    "span_ops": {
+      "ops.db": {
+        "value": 9.593,
+        "unit": "millisecond"
+      },
+      "total.time": {
+        "value": 13.406,
+        "unit": "millisecond"
+      }
+    }
+  },
+  "release": {
+    "id": 1374625399,
+    "commitCount": 0,
+    "data": {},
+    "dateCreated": "2025-03-10T21:24:59.257047Z",
+    "dateReleased": "2025-03-10T21:33:05.207722Z",
+    "deployCount": 1,
+    "ref": null,
+    "lastCommit": null,
+    "lastDeploy": {
+      "id": "68006022",
+      "environment": "production",
+      "dateStarted": null,
+      "dateFinished": "2025-03-10T21:33:04.879396Z",
+      "name": null,
+      "url": null
+    },
+    "status": "open",
+    "url": null,
+    "userAgent": null,
+    "version": "9cf62a3f6cf0751918f8d3e55b555389fe520190",
+    "versionInfo": {
+      "package": null,
+      "version": {
+        "raw": "9cf62a3f6cf0751918f8d3e55b555389fe520190"
+      },
+      "description": "9cf62a3f6cf0",
+      "buildHash": "9cf62a3f6cf0751918f8d3e55b555389fe520190"
+    }
+  },
+  "projectSlug": "seer"
+}

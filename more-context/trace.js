@@ -104,8 +104,8 @@ async function fetchInterserviceContext(organizationSlug, issueId) {
         trace
       };
 
-      const llmResponse = await callLLM(llmData);
-      console.log('LLM Response:', llmResponse);
+      // const llmResponse = await callLLM(llmData);
+      // console.log('LLM Response:', llmResponse);
     }
   } catch (error) {
     console.error('Error in main function:', error.message);

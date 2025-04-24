@@ -1,0 +1,1171 @@
+You are given a diff block annotated with static analysis warnings which may or may not be important:
+
+<diff>
+
+<file><filename>src/seer/automation/autofix/autofix_context.py</filename>
+
+Here are the changes made to file src/seer/automation/autofix/autofix_context.py:
+
+            @@ -1,6 +1,7 @@
+  1      1  import functools
+  2      2  import logging
+  3      3  import textwrap
+         4 +from datetime import datetime
+  4      5  from typing import Mapping
+  5      6  
+  6      7  import sentry_sdk
+
+            @@ -168,7 +169,12 @@ def get_file_contents(
+168    169          return file_contents
+169    170  
+170    171      def get_commit_history_for_file(
+171        -        self, path: str, repo_name: str | None = None, max_commits: int = 10
+       172 +        self,
+       173 +        path: str | None = None,
+       174 +        repo_name: str | None = None,
+       175 +        max_commits: int = 10,
+       176 +        until_date: datetime | None = None,
+       177 +        skip_first_n_commits: int = 0,
+172    178      ) -> list[str]:
+173    179          repo_name = self.autocorrect_repo_name(repo_name) if repo_name else None
+174    180          if not repo_name:
+
+            @@ -177,7 +183,13 @@ def get_commit_history_for_file(
+177    183              )
+178    184  
+179    185          repo_client = self.get_repo_client(repo_name)
+180        -        return repo_client.get_commit_history(path, autocorrect=True, max_commits=max_commits)
+       186 +        return repo_client.get_commit_history(
+       187 +            path,
+       188 +            autocorrect=True,
+       189 +            max_commits=max_commits,
+       190 +            until_date=until_date,
+       191 +            skip_first_n_commits=skip_first_n_commits,
+       192 +        )
+181    193  
+182    194      def get_commit_patch_for_file(
+183    195          self, path: str, repo_name: str | None = None, commit_sha: str | None = None
+
+No warnings were found in this file.
+
+</file>
+
+#################
+
+<file><filename>src/seer/automation/autofix/tools/suspect_commit.py</filename>
+
+Here are the changes made to file src/seer/automation/autofix/tools/suspect_commit.py:
+
+            @@ -0,0 +1,85 @@
+         1 +import textwrap
+         2 +from datetime import datetime
+         3 +
+         4 +from seer.automation.agent.agent import AgentConfig, LlmAgent, RunConfig
+         5 +from seer.automation.agent.client import GeminiProvider
+         6 +from seer.automation.autofix.autofix_context import AutofixContext
+         7 +from seer.automation.autofix.tools.tools import SuspectCommitTools  # Import the new tools
+         8 +from seer.automation.models import EventDetails
+         9 +
+        10 +
+        11 +def search_commit_history(query: str, repo_name: str, context: AutofixContext) -> str:
+        12 +    """
+        13 +    Uses an LLM agent to search the commit history of a repository to find one that is suspicious.
+        14 +    """
+        15 +    state = context.state.get()
+        16 +    issue_first_seen = state.request.issue.first_seen
+        17 +    event_seen = None
+        18 +    if state.request.issue.events:
+        19 +        event_details = EventDetails.from_event(state.request.issue.events[0])
+        20 +        event_seen = event_details.datetime
+        21 +
+        22 +    def _parse_iso_date(date_str: str | None) -> datetime | None:
+        23 +        if not date_str:
+        24 +            return None
+        25 +        try:
+        26 +            return datetime.fromisoformat(date_str)
+        27 +        except ValueError:
+        28 +            return None
+        29 +
+        30 +    dt_issue_first_seen = _parse_iso_date(issue_first_seen)
+        31 +    dt_event_seen = _parse_iso_date(event_seen)
+        32 +    valid_dates = [d for d in [dt_issue_first_seen, dt_event_seen] if d is not None]
+        33 +    earliest_dt: datetime | None = min(valid_dates) if valid_dates else None
+        34 +
+        35 +    tools = SuspectCommitTools(context=context, earliest_dt=earliest_dt)
+        36 +
+        37 +    agent_config = AgentConfig(interactive=False)
+        38 +    agent = LlmAgent(
+        39 +        config=agent_config,
+        40 +        tools=tools.get_tools(can_access_repos=True),
+        41 +        name="SuspectCommitAgent",
+        42 +    )
+        43 +
+        44 +    whole_repo_initial_history = tools.view_commit_history_for_file(
+        45 +        file_path=None,
+        46 +        repo_name=repo_name,
+        47 +        skip_first_n_commits=0,
+        48 +    )
+        49 +
+        50 +    system_prompt = textwrap.dedent(
+        51 +        """\
+        52 +        You are an exceptional assistant specialized in finding the most relevant commits in git history.
+        53 +        Your goal is to identify the most relevant commit(s), if any, to the user's query.
+        54 +
+        55 +        Use the available tools:
+        56 +        - `view_commit_history_for_file`: To view commit history for relevant files. You can specify `skip_first_n_commits` to paginate through older commits if needed.
+        57 +        - `view_diff`: To examine the changes introduced by a specific commit SHA.
+        58 +
+        59 +        You have the following repo to work with: {repo_str}
+        60 +
+        61 +        Steps:
+        62 +        1. Use `view_commit_history_for_file` to get the recent commit history for relevant files. If no commit is immediately relevant, try increasing `skip_first_n_commits` to see older commits.
+        63 +        2. If a commit looks relevant, use `view_diff` with its SHA to see the exact changes.
+        64 +        3. Continue exploring history (using `skip_first_n_commits`) and diffs until you find a commit that seems highly likely to be the cause, or you have exhausted the relevant history.
+        65 +
+        66 +        In your final response, list the exact commit SHAs, descriptions, and diffs that you suspect, and explain why you suspect each one. If no relevant commit is found, explain why.
+        67 +
+        68 +        To start you off, here are the most recent commits for the entire repository (path "/"):
+        69 +        {whole_repo_initial_history}
+        70 +    """
+        71 +    ).format(
+        72 +        repo_str=repo_name,
+        73 +        whole_repo_initial_history=whole_repo_initial_history,
+        74 +    )
+        75 +
+        76 +    run_config = RunConfig(
+        77 +        system_prompt=system_prompt,
+        78 +        prompt=f"Look for a commit about: {query}",
+        79 +        model=GeminiProvider(model_name="gemini-2.5-flash-preview-04-17"),
+        80 +        temperature=0.0,
+        81 +        max_iterations=32,
+        82 +    )
+        83 +
+        84 +    result = agent.run(run_config)
+        85 +    return result  <-- STATIC ANALYSIS WARNINGS: Warning (ID 2433276): Unnecessary assignment to `result` before `return` statement
+
+Here's more information about the static analysis warnings in src/seer/automation/autofix/tools/suspect_commit.py:
+
+<warnings>
+
+<warning><warning_id>2433276</warning_id>
+Warning (ID 2433276): Unnecessary assignment to `result` before `return` statement
+----------
+Location:
+    filename: src/seer/automation/autofix/tools/suspect_commit.py
+    start_line: 85
+    end_line: 85
+----------
+Potentially related issue titles:
+* UnknownObjectException: 404 {"message": "Not Found", "documentation_url": "https://docs.github.com/rest/git/trees#get-a-tree", "status": "404"}
+* UnknownObjectException: 404 {"message": "Not Found", "documentation_url": "https://docs.github.com/rest/apps/apps#get-a-repository-installation-for-the-authenticated-app", "status": "404"}
+----------
+</warning>
+
+</warnings>
+
+</file>
+
+#################
+
+<file><filename>src/seer/automation/autofix/tools/tools.py</filename>
+
+Here are the changes made to file src/seer/automation/autofix/tools/tools.py:
+
+              @@ -4,6 +4,7 @@
+   4       4  import subprocess
+   5       5  import textwrap
+   6       6  from concurrent.futures import Future, ThreadPoolExecutor, TimeoutError, as_completed
+           7 +from datetime import datetime
+   7       8  from threading import Lock
+   8       9  from typing import Any, cast
+   9      10  
+
+              @@ -909,6 +910,44 @@ def _handle_undo_edit_command(
+ 909     910                      return "File changes undone successfully."
+ 910     911              return "Error: No file changes found to undo."
+ 911     912  
+         913 +    @observe(name="Find Suspect Commit")
+         914 +    @sentry_sdk.trace
+         915 +    def find_suspect_commit(
+         916 +        self, what_to_look_for: str, file_paths: str | None = None, repo_name: str | None = None
+         917 +    ):
+         918 +        from seer.automation.autofix.tools.suspect_commit import search_commit_history
+         919 +
+         920 +        if not isinstance(self.context, AutofixContext):
+         921 +            raise ValueError("Suspect commit search is only available in the Autofix context.")  <-- STATIC ANALYSIS WARNINGS: Warning (ID 2433586): Avoid specifying long messages outside the exception class || Warning (ID 2433661): Prefer `TypeError` exception for invalid type
+         922 +
+         923 +        # Determine the repository name to search
+         924 +        repos = self._get_repo_names()
+         925 +        if not repos:
+         926 +            return "Error: No repositories found."
+         927 +
+         928 +        target_repo_name = repo_name
+         929 +        if not target_repo_name:
+         930 +            if len(repos) > 1:
+         931 +                return (
+         932 +                    "Error: Multiple repositories found. Please specify which repository to search using the `repo_name` parameter. Available repositories: "
+         933 +                    + ", ".join(repos)
+         934 +                )
+         935 +            target_repo_name = repos[0]
+         936 +
+         937 +        if target_repo_name not in repos:
+         938 +            return f"Error: Repository '{target_repo_name}' not found. Available repositories: {', '.join(repos)}"
+         939 +
+         940 +        self.context.event_manager.add_log(
+         941 +            f"Searching for suspect commit in '{target_repo_name}'..."
+         942 +        )
+         943 +
+         944 +        if file_paths:
+         945 +            query = f"{what_to_look_for}\n\nFiles to focus on: {file_paths}"
+         946 +        else:
+         947 +            query = what_to_look_for
+         948 +
+         949 +        return search_commit_history(query=query, repo_name=target_repo_name, context=self.context)
+         950 +
+ 912     951      def get_tools(
+ 913     952          self, can_access_repos: bool = True, include_claude_tools: bool = False
+ 914     953      ) -> list[ClaudeTool | FunctionTool]:
+
+              @@ -1079,29 +1118,32 @@ def get_tools(
+1079    1118                          ],
+1080    1119                          required=["file_path", "repo_name", "commit_sha"],
+1081    1120                      ),
+        1121 +                    FunctionTool(
+        1122 +                        name="find_suspect_commit",
+        1123 +                        fn=self.find_suspect_commit,
+        1124 +                        description="Tries to search commit history within a specified repository to find a commit that introduced a change relevant to the issue.",
+        1125 +                        parameters=[
+        1126 +                            {
+        1127 +                                "name": "what_to_look_for",
+        1128 +                                "type": "string",
+        1129 +                                "description": "Describe what would indicate a suspicious commit. Be as specific as possible.",
+        1130 +                            },
+        1131 +                            {
+        1132 +                                "name": "file_paths",
+        1133 +                                "type": "string",
+        1134 +                                "description": "List of file paths to focus on when searching commits.",
+        1135 +                            },
+        1136 +                            {
+        1137 +                                "name": "repo_name",
+        1138 +                                "type": "string",
+        1139 +                                "description": "Optional name of the repository to search in. Required if multiple repositories are available.",
+        1140 +                            },
+        1141 +                        ],
+        1142 +                        required=["what_to_look_for", "file_paths"],
+        1143 +                    ),
+1082    1144                  ]
+1083    1145              )
+1084    1146  
+1085         -        # if (
+1086         -        #     isinstance(self.context, AutofixContext)
+1087         -        #     and not self.context.state.get().request.options.disable_interactivity
+1088         -        # ):
+1089         -        #     tools.append(
+1090         -        #         FunctionTool(
+1091         -        #             name="ask_a_question",
+1092         -        #             fn=self.ask_user_question,
+1093         -        #             description="Ask the user a question about business logic, product requirements, past decisions, or subjective preferences. You may not ask about anything else. Only use this tool if necessary.",
+1094         -        #             parameters=[
+1095         -        #                 {
+1096         -        #                     "name": "question",
+1097         -        #                     "type": "string",
+1098         -        #                     "description": "The question you want to ask.",
+1099         -        #                 }
+1100         -        #             ],
+1101         -        #             required=["question"],
+1102         -        #         )
+1103         -        #     )
+1104         -
+1105    1147          run_request = self.context.state.get().request
+1106    1148          if (
+1107    1149              isinstance(self.context, AutofixContext)
+
+              @@ -1158,46 +1200,108 @@ def get_tools(
+1158    1200          if not can_access_repos:
+1159    1201              return []
+1160    1202  
+1161         -        return [
+1162         -            FunctionTool(
+1163         -                name="tree",
+1164         -                fn=self.tree,
+1165         -                description="Given the path for a directory in this codebase, returns a tree representation of the directory structure and files.",
+1166         -                parameters=[
+1167         -                    {
+1168         -                        "name": "path",
+1169         -                        "type": "string",
+1170         -                        "description": 'The path to view. For example, "src/app/components"',
+1171         -                    },
+1172         -                    {
+1173         -                        "name": "repo_name",
+1174         -                        "type": "string",
+1175         -                        "description": "Optional name of the repository to search in if you know it.",
+1176         -                    },
+1177         -                ],
+1178         -                required=["path"],
+        1203 +        all_tools = super().get_tools(can_access_repos=can_access_repos, include_claude_tools=False)
+        1204 +
+        1205 +        allowed_tool_names = {"tree", "expand_document"}
+        1206 +
+        1207 +        filtered_tools = [
+        1208 +            tool
+        1209 +            for tool in all_tools
+        1210 +            if isinstance(tool, FunctionTool) and tool.name in allowed_tool_names
+        1211 +        ]
+        1212 +
+        1213 +        return filtered_tools  <-- STATIC ANALYSIS WARNINGS: Warning (ID 2433278): Unnecessary assignment to `filtered_tools` before `return` statement
+        1214 +
+        1215 +
+        1216 +class SuspectCommitTools(BaseTools):
+        1217 +    earliest_dt: datetime | None = None
+        1218 +
+        1219 +    def __init__(
+        1220 +        self,
+        1221 +        context: AutofixContext | CodegenContext,
+        1222 +        earliest_dt: datetime | None,
+        1223 +        retrieval_top_k: int = 8,
+        1224 +        repo_client_type: RepoClientType = RepoClientType.READ,
+        1225 +    ):
+        1226 +        super().__init__(context, retrieval_top_k, repo_client_type)
+        1227 +        self.earliest_dt = earliest_dt
+        1228 +
+        1229 +    @observe(name="View Commit History for File")
+        1230 +    @sentry_sdk.trace
+        1231 +    def view_commit_history_for_file(
+        1232 +        self, repo_name: str, file_path: str | None = None, skip_first_n_commits: int = 0
+        1233 +    ) -> str:
+        1234 +        """
+        1235 +        Given a file path and repository name, returns the commit history for the file before a specific date.
+        1236 +        Allows pagination through commit history using skip_first_n_commits.
+        1237 +        """
+        1238 +        if not isinstance(self.context, AutofixContext):
+        1239 +            return "Commit history is only available in Autofix context."
+        1240 +
+        1241 +        self.context.event_manager.add_log(
+        1242 +            f"Studying history for `{file_path}` in `{repo_name}`..."
+        1243 +        )
+        1244 +
+        1245 +        max_commits = 50
+        1246 +        commit_history = self.context.get_commit_history_for_file(
+        1247 +            file_path,
+        1248 +            repo_name,
+        1249 +            max_commits=max_commits,
+        1250 +            skip_first_n_commits=skip_first_n_commits,
+        1251 +            until_date=self.earliest_dt,
+        1252 +        )
+        1253 +        if commit_history:
+        1254 +            return (
+        1255 +                f"COMMIT HISTORY (showing up to {max_commits} commits before {self.earliest_dt.isoformat() if self.earliest_dt else 'latest'}, skipped {skip_first_n_commits}) most recent commits:\n"
+        1256 +                + "\n".join(commit_history)
+        1257 +            )
+        1258 +        return f"No further commit history found for the given file before {self.earliest_dt.isoformat() if self.earliest_dt else 'latest'} (skipped {skip_first_n_commits} most recent commits). Either the file path or repo name is incorrect or all relevant commits have been shown."
+        1259 +
+        1260 +    def get_tools(
+        1261 +        self, can_access_repos: bool = True, include_claude_tools: bool = False
+        1262 +    ) -> list[ClaudeTool | FunctionTool]:
+        1263 +        if not can_access_repos or not isinstance(self.context, AutofixContext):
+        1264 +            return []
+        1265 +
+        1266 +        base_tools = super().get_tools(
+        1267 +            can_access_repos=can_access_repos, include_claude_tools=False
+        1268 +        )
+        1269 +        view_diff_tool = next(
+        1270 +            (
+        1271 +                tool
+        1272 +                for tool in base_tools
+        1273 +                if isinstance(tool, FunctionTool) and tool.name == "view_diff"
+1179    1274              ),
+        1275 +            None,
+        1276 +        )
+        1277 +
+        1278 +        tools: list[FunctionTool] = [
+1180    1279              FunctionTool(
+1181         -                name="expand_document",
+1182         -                fn=self.expand_document,
+1183         -                description=textwrap.dedent(
+1184         -                    """\
+1185         -                Given a document path, returns the entire document text.
+1186         -                - Note: To save time and money, if you're looking to expand multiple documents, call this tool multiple times in the same message.
+1187         -                - If a document has already been expanded earlier in the conversation, don't use this tool again for the same file path."""
+1188         -                ),
+        1280 +                name="view_commit_history_for_file",
+        1281 +                fn=self.view_commit_history_for_file,
+        1282 +                description="Given a file path and repository name, returns commit history for the file *before* the issue first occurred. Use `skip_first_n_commits` to see older commits if the initial list doesn't contain the suspect.",
+1189    1283                  parameters=[
+1190    1284                      {
+1191    1285                          "name": "file_path",
+1192    1286                          "type": "string",
+1193         -                        "description": "The document path to expand.",
+        1287 +                        "description": "The file to get commit history for.",
+1194    1288                      },
+1195    1289                      {
+1196    1290                          "name": "repo_name",
+1197    1291                          "type": "string",
+1198    1292                          "description": "Name of the repository containing the file.",
+1199    1293                      },
+        1294 +                    {
+        1295 +                        "name": "skip_first_n_commits",
+        1296 +                        "type": "integer",
+        1297 +                        "description": "Number of commits to skip from the beginning of the relevant history (useful for pagination). Defaults to 0.",
+        1298 +                    },
+1200    1299                  ],
+1201    1300                  required=["file_path", "repo_name"],
+1202    1301              ),
+1203    1302          ]
+        1303 +
+        1304 +        if view_diff_tool:
+        1305 +            tools.append(view_diff_tool)
+        1306 +
+        1307 +        return tools
+
+Here's more information about the static analysis warnings in src/seer/automation/autofix/tools/tools.py:
+
+<warnings>
+
+<warning><warning_id>2433278</warning_id>
+Warning (ID 2433278): Unnecessary assignment to `filtered_tools` before `return` statement
+----------
+Location:
+    filename: src/seer/automation/autofix/tools/tools.py
+    start_line: 1213
+    end_line: 1213
+----------
+Potentially related issue titles:
+* UnknownObjectException: 404 {"message": "Not Found", "documentation_url": "https://docs.github.com/rest/apps/apps#get-a-repository-installation-for-the-authenticated-app", "status": "404"}
+----------
+</warning>
+
+<warning><warning_id>2433586</warning_id>
+Warning (ID 2433586): Avoid specifying long messages outside the exception class
+----------
+Location:
+    filename: src/seer/automation/autofix/tools/tools.py
+    start_line: 921
+    end_line: 921
+----------
+Potentially related issue titles:
+* ValidationError: 3 validation errors for RequestDetails
+----------
+</warning>
+
+<warning><warning_id>2433661</warning_id>
+Warning (ID 2433661): Prefer `TypeError` exception for invalid type
+----------
+Location:
+    filename: src/seer/automation/autofix/tools/tools.py
+    start_line: 921
+    end_line: 921
+----------
+Potentially related issue titles:
+* ValidationError: 3 validation errors for RequestDetails
+* UnknownObjectException: 404 {"message": "Not Found", "documentation_url": "https://docs.github.com/rest/apps/apps#get-a-repository-installation-for-the-authenticated-app", "status": "404"}
+* UnknownObjectException: 404 {"message": "Not Found", "documentation_url": "https://docs.github.com/rest/git/trees#get-a-tree", "status": "404"}
+----------
+</warning>
+
+</warnings>
+
+</file>
+
+#################
+
+<file><filename>src/seer/automation/codebase/repo_client.py</filename>
+
+Here are the changes made to file src/seer/automation/codebase/repo_client.py:
+
+            @@ -6,6 +6,7 @@
+  6      6  import tempfile
+  7      7  import textwrap
+  8      8  from concurrent.futures import ThreadPoolExecutor
+         9 +from datetime import datetime
+  9     10  from enum import Enum
+ 10     11  from typing import Any, Dict, List, Literal
+ 11     12  
+
+            @@ -20,6 +21,7 @@
+ 20     21      InputGitTreeElement,
+ 21     22      UnknownObjectException,
+ 22     23  )
+        24 +from github.GithubObject import NotSet
+ 23     25  from github.GitRef import GitRef
+ 24     26  from github.GitTree import GitTree
+ 25     27  from github.GitTreeElement import GitTreeElement
+
+            @@ -432,18 +434,26 @@ def get_valid_file_paths(self, sha: str | None = None) -> set[str]:
+432    434  
+433    435      @functools.lru_cache(maxsize=16)  <-- STATIC ANALYSIS WARNINGS: Warning (ID 2433097): Use of `functools.lru_cache` or `functools.cache` on methods can lead to memory leaks
+434    436      def get_commit_history(
+435        -        self, path: str, sha: str | None = None, autocorrect: bool = False, max_commits: int = 10
+       437 +        self,
+       438 +        path: str | None = None,
+       439 +        sha: str | None = None,
+       440 +        autocorrect: bool = False,
+       441 +        max_commits: int = 10,
+       442 +        until_date: datetime | None = None,
+       443 +        skip_first_n_commits: int = 0,
+436    444      ) -> list[str]:
+437    445          if sha is None:
+438    446              sha = self.base_commit_sha
+439    447  
+440        -        if autocorrect:
+       448 +        if autocorrect and path:
+441    449              path, was_autocorrected = self._autocorrect_path(path, sha)
+442    450              if not was_autocorrected and path not in self.get_valid_file_paths(sha):
+443    451                  return []
+444    452  
+445        -        commits = self.repo.get_commits(sha=sha, path=path)
+446        -        commit_list = list(commits[:max_commits])
+       453 +        commits = self.repo.get_commits(sha=sha, path=path or NotSet, until=until_date or NotSet)
+       454 +        if skip_first_n_commits >= len(commits):
+       455 +            return ["No commits foundin selected range."]
+       456 +        commit_list = list(commits[skip_first_n_commits : skip_first_n_commits + max_commits])
+447    457          commit_strs = []
+448    458  
+449    459          def process_commit(commit):
+
+Here's more information about the static analysis warnings in src/seer/automation/codebase/repo_client.py:
+
+<warnings>
+
+<warning><warning_id>2433097</warning_id>
+Warning (ID 2433097): Use of `functools.lru_cache` or `functools.cache` on methods can lead to memory leaks
+----------
+Location:
+    filename: src/seer/automation/codebase/repo_client.py
+    start_line: 435
+    end_line: 435
+----------
+Potentially related issue titles:
+* UnknownObjectException: 404 {"message": "Not Found", "documentation_url": "https://docs.github.com/rest/apps/apps#get-a-repository-installation-for-the-authenticated-app", "status": "404"}
+* UnknownObjectException: 404 {"message": "Not Found", "documentation_url": "https://docs.github.com/rest/git/trees#get-a-tree", "status": "404"}
+* ValidationError: 3 validation errors for RequestDetails
+----------
+</warning>
+
+</warnings>
+
+</file>
+
+#################
+
+<file><filename>src/seer/automation/models.py</filename>
+
+Here are the changes made to file src/seer/automation/models.py:
+
+            @@ -330,6 +330,7 @@ class EventDetails(BaseModel):
+330    330      breadcrumbs: list[BreadcrumbsDetails] = Field(default_factory=list, exclude=False)
+331    331      stacktraces: list[Stacktrace] = Field(default_factory=list, exclude=False)
+332    332      request: RequestDetails | None = None
+       333 +    datetime: str | None = None
+333    334  
+334    335      @classmethod
+335    336      def from_event(cls, error_event: SentryEventData):
+
+            @@ -398,6 +399,7 @@ def from_event(cls, error_event: SentryEventData):
+398    399              message=message,
+399    400              stacktraces=stacktraces,
+400    401              request=request,
+       402 +            datetime=error_event.get("datetime"),
+401    403          )
+402    404  
+403    405      def format_event(self):
+
+            @@ -591,6 +593,7 @@ class IssueDetails(BaseModel):
+591    593      id: Annotated[int, Examples(specialized.unsigned_ints)]
+592    594      title: Annotated[str, Examples(specialized.ascii_words)]
+593    595      short_id: Optional[str] = None
+       596 +    first_seen: str | None = None
+594    597      events: list[SentryEventData]
+595    598  
+596    599  
+
+No warnings were found in this file.
+
+</file>
+
+</diff>
+
+You are also given a list of past Sentry issues that exist in the codebase close to the diff.
+This has information about the line number where the issue occurred and the corresponding stack trace.
+You may find this helpful to know the execution tree for the code that is in the diff.
+<sentry_issues>
+<sentry_issue><issue_id>6167952126</issue_id>
+<title>UnknownObjectException: 404 {"message": "Not Found", "documentation_url": "https://docs.github.com/rest/apps/apps#get-a-repository-installation-for-the-authenticated-app", "status": "404"}</title>
+
+<exceptions>
+<exception_0 is_exception_handled="yes" type="UnknownObjectException" message="404 {"message": "Not Found", "documentation_url": "https://docs.github.com/rest/apps/apps#get-a-repository-installation-for-the-authenticated-app", "status": "404"}">
+ __check in file github/Requester.py [Line 525] (Not in app)
+        responseHeaders: Dict[str, Any],
+        output: str,
+    ) -> Tuple[Dict[str, Any], Any]:
+        data = self.__structuredFromJson(output)
+        if status >= 400:
+            raise self.createException(status, responseHeaders, data)  <-- SUSPECT LINE
+        return responseHeaders, data
+
+    def __customConnection(
+        self, url: str
+    ) -> Optional[Union[HTTPRequestsConnectionClass, HTTPSRequestsConnectionClass]]:
+---
+Variable values at the time of the exception::
+{
+  "data": {
+    "message": 'Not Found',
+    "status": '404'
+  },
+  "responseHeaders": {
+    "access-control-allow-origin": '*',
+    "content-type": 'application/json; charset=utf-8',
+    "date": 'Tue, 15 Apr 2025 09:04:34 GMT',
+    "strict-transport-security": 'max-age=31536000; includeSubdomains; preload',
+    "x-content-type-options": 'nosniff',
+    "x-frame-options": 'deny',
+    "x-github-api-version-selected": '2022-11-28',
+    "x-github-media-type": 'github.v3; param=machine-man-preview; format=json',
+    "x-xss-protection": '0'
+  },
+  "self": <github.Requester.Requester object at 0x7e0dca0b6990>,
+  "status": 404
+}
+------
+ requestJsonAndCheck in file github/Requester.py [Line 494] (Not in app)
+        url: str,
+        parameters: Optional[Dict[str, Any]] = None,
+        headers: Optional[Dict[str, str]] = None,
+        input: Optional[Any] = None,
+    ) -> Tuple[Dict[str, Any], Any]:
+        return self.__check(*self.requestJson(verb, url, parameters, headers, input, self.__customConnection(url)))  <-- SUSPECT LINE
+
+    def requestMultipartAndCheck(
+        self,
+        verb: str,
+        url: str,
+---
+Variable values at the time of the exception::
+{
+  "headers": {
+    "Accept": 'application/vnd.github.machine-man-preview+json',
+    "User-Agent": 'PyGithub/Python'
+  },
+  "input": None,
+  "parameters": None,
+  "self": <github.Requester.Requester object at 0x7e0dca0b6990>,
+  "url": '/repos/runna-app/rb-web/installation',
+  "verb": 'GET'
+}
+------
+ _get_installed_app in file github/GithubIntegration.py [Line 166] (Not in app)
+
+    def _get_installed_app(self, url: str) -> Installation:
+        """
+        Get installation for the given URL.
+        """
+        headers, response = self.__requester.requestJsonAndCheck("GET", url, headers=self._get_headers())  <-- SUSPECT LINE
+
+        return Installation(
+            requester=self.__requester,
+            headers=headers,
+            attributes=response,
+---
+Variable values at the time of the exception::
+{
+  "self": <github.GithubIntegration.GithubIntegration object at 0x7e0dca0b7e10>,
+  "url": '/repos/runna-app/rb-web/installation'
+}
+------
+ get_repo_installation in file github/GithubIntegration.py [Line 244] (Not in app)
+
+    def get_repo_installation(self, owner: str, repo: str) -> Installation:
+        """
+        :calls: `GET /repos/{owner}/{repo}/installation <https://docs.github.com/en/rest/reference/apps#get-a-repository-installation-for-the-authenticated-app>`
+        """
+        return self._get_installed_app(url=f"/repos/{owner}/{repo}/installation")  <-- SUSPECT LINE
+
+    def get_user_installation(self, username: str) -> Installation:
+        """
+        :calls: `GET /users/{username}/installation <https://docs.github.com/en/rest/apps/apps#get-a-user-installation-for-the-authenticated-app>`
+        """
+---
+Variable values at the time of the exception::
+{
+  "owner": 'runna-app',
+  "repo": 'rb-web',
+  "self": <github.GithubIntegration.GithubIntegration object at 0x7e0dca0b7e10>
+}
+------
+ get_github_app_auth_and_installation in file seer/automation/codebase/repo_client.py [Line 45] (In app)
+def get_github_app_auth_and_installation(
+    app_id: int | str, private_key: str, repo_owner: str, repo_name: str
+):
+    app_auth = Auth.AppAuth(app_id, private_key=private_key)
+    gi = GithubIntegration(auth=app_auth)
+    installation = gi.get_repo_installation(repo_owner, repo_name)  <-- SUSPECT LINE
+    github_auth = app_auth.get_installation_auth(installation.id)
+
+    return github_auth, installation
+
+
+---
+Variable values at the time of the exception::
+{
+  "app_id": '12637',
+  "gi": <github.GithubIntegration.GithubIntegration object at 0x7e0dca0b7e10>,
+  "repo_name": 'rb-web',
+  "repo_owner": 'runna-app'
+}
+------
+ __init__ in file seer/automation/codebase/repo_client.py [Line 188] (In app)
+                f"Unsupported repo provider: {repo_definition.provider}, only {', '.join(self.supported_providers)} are supported."
+            )
+
+        if app_id and private_key:
+            self.github = Github(
+                auth=get_github_app_auth_and_installation(  <-- SUSPECT LINE
+                    app_id, private_key, repo_definition.owner, repo_definition.name
+                )[0]
+            )
+        else:
+            self.github = Github(auth=get_github_token_auth())
+---
+Variable values at the time of the exception::
+{
+  "app_id": '12637',
+  "repo_definition": RepoDefinition(provider='github', owner='runna-app', name='rb-web', external_id='800445281', branch_name='', instructions='', base_commit_sha=None, provider_raw=None),
+  "self": <seer.automation.codebase.repo_client.RepoClient object at 0x7e0dd5785490>
+}
+------
+ from_repo_definition in file seer/automation/codebase/repo_client.py [Line 262] (In app)
+        elif type == RepoClientType.CODECOV_UNIT_TEST:
+            return cls(*get_codecov_unit_test_app_credentials(), repo_def)
+        elif type in (RepoClientType.CODECOV_PR_REVIEW, RepoClientType.CODECOV_PR_CLOSED):
+            return cls(*get_codecov_pr_review_app_credentials(), repo_def)
+
+        return cls(*get_read_app_credentials(), repo_def)  <-- SUSPECT LINE
+
+    @property
+    def repo_full_name(self):
+        return self.repo.full_name
+
+---
+Variable values at the time of the exception::
+{
+  "cls": <class 'seer.automation.codebase.repo_client.RepoClient'>,
+  "repo_def": RepoDefinition(provider='github', owner='runna-app', name='rb-web', external_id='800445281', branch_name='', instructions='', base_commit_sha=None, provider_raw=None),
+  "type": <RepoClientType.READ: 'read'>
+}
+------
+ get_repo_client in file seer/automation/autofix/autofix_context.py [Line 130] (In app)
+        if not repo:
+            raise AgentError() from ValueError(
+                "Repo not found. Please provide a valid repo name or external ID."
+            )
+
+        return RepoClient.from_repo_definition(repo, type)  <-- SUSPECT LINE
+
+    def autocorrect_repo_name(self, repo_name: str) -> str | None:
+        readable_repos = self.state.get().readable_repos
+        repo_names = [
+            repo.full_name
+---
+Variable values at the time of the exception::
+{
+  "repo": RepoDefinition(provider='github', owner='runna-app', name='rb-web', external_id='800445281', branch_name='', instructions='', base_commit_sha=None, provider_raw=None),
+  "repo_name": 'runna-app/rb-web',
+  "self": <seer.automation.autofix.autofix_context.AutofixContext object at 0x7e0ddad59dd0>,
+  "type": <RepoClientType.READ: 'read'>
+}
+------
+ get_file_contents in file seer/automation/autofix/autofix_context.py [Line 156] (In app)
+        repo_name = self.autocorrect_repo_name(repo_name) if repo_name else None
+        if not repo_name:
+            raise AgentError() from ValueError(
+                f"Repo '{repo_name}' not found. Available repos: {', '.join([repo.full_name for repo in self.repos])}"
+            )
+        repo_client = self.get_repo_client(repo_name)  <-- SUSPECT LINE
+
+        file_contents, _ = repo_client.get_file_content(path, autocorrect=True)
+
+        if not ignore_local_changes:
+            cur_state = self.state.get()
+---
+Variable values at the time of the exception::
+{
+  "ignore_local_changes": False,
+  "path": 'src/app/(secure)/account/components/AccountInfoList.tsx',
+  "repo_name": 'runna-app/rb-web',
+  "self": <seer.automation.autofix.autofix_context.AutofixContext object at 0x7e0ddad59dd0>
+}
+------
+ expand_document in file seer/automation/autofix/tools.py [Line 186] (In app)
+        return f"This file might be what you're looking for: `{file_path}`. Contents:\n\n{file_contents}"
+
+    @observe(name="Expand Document")
+    @ai_track(description="Expand Document")
+    def expand_document(self, file_path: str, repo_name: str):
+        file_contents = self.context.get_file_contents(file_path, repo_name=repo_name)  <-- SUSPECT LINE
+
+        self.context.event_manager.add_log(f"Looking at `{file_path}` in `{repo_name}`...")
+
+        if file_contents:
+            return file_contents
+---
+Variable values at the time of the exception::
+{
+  "file_path": 'src/app/(secure)/account/components/AccountInfoList.tsx',
+  "repo_name": 'runna-app/rb-web',
+  "self": <seer.automation.autofix.tools.BaseTools object at 0x7e0ddacda810>
+}
+------
+ sync_wrapper in file langfuse/decorators/langfuse_decorator.py [Line 254] (Not in app)
+                func_kwargs=kwargs,
+            )
+            result = None
+
+            try:
+                result = func(*args, **kwargs)  <-- SUSPECT LINE
+            except Exception as e:
+                self._handle_exception(observation, e)
+            finally:
+                result = self._finalize_call(
+                    observation, result, capture_output, transform_to_string
+---
+Variable values at the time of the exception::
+{
+  "args": [
+    <seer.automation.autofix.tools.BaseTools object at 0x7e0ddacda810>
+  ],
+  "capture_output": True,
+  "func": <function BaseTools.expand_document at 0x7e0c39eadc60>,
+  "kwargs": {
+    "file_path": 'src/app/(secure)/account/components/AccountInfoList.tsx',
+    "repo_name": 'runna-app/rb-web'
+  },
+  "observation": <langfuse.client.StatefulSpanClient object at 0x7e0dc9eaba10>,
+  "result": None,
+  "self": <langfuse.decorators.langfuse_decorator.LangfuseDecorator object at 0x7e0c3f0ac410>
+}
+------
+ _handle_exception in file langfuse/decorators/langfuse_decorator.py [Line 520] (Not in app)
+    ):
+        if observation:
+            _observation_params_context.get()[observation.id].update(
+                level="ERROR", status_message=str(e)
+            )
+        raise e  <-- SUSPECT LINE
+
+    def _wrap_sync_generator_result(
+        self,
+        observation: Optional[
+            Union[
+---
+Variable values at the time of the exception::
+{
+  "observation": <langfuse.client.StatefulSpanClient object at 0x7e0dc9eaba10>,
+  "self": <langfuse.decorators.langfuse_decorator.LangfuseDecorator object at 0x7e0c3f0ac410>
+}
+------
+ sync_wrapper in file langfuse/decorators/langfuse_decorator.py [Line 256] (Not in app)
+            result = None
+
+            try:
+                result = func(*args, **kwargs)
+            except Exception as e:
+                self._handle_exception(observation, e)  <-- SUSPECT LINE
+            finally:
+                result = self._finalize_call(
+                    observation, result, capture_output, transform_to_string
+                )
+
+---
+Variable values at the time of the exception::
+{
+  "args": [
+    <seer.automation.autofix.tools.BaseTools object at 0x7e0ddacda810>
+  ],
+  "capture_output": True,
+  "func": <function BaseTools.expand_document at 0x7e0c39eadc60>,
+  "kwargs": {
+    "file_path": 'src/app/(secure)/account/components/AccountInfoList.tsx',
+    "repo_name": 'runna-app/rb-web'
+  },
+  "observation": <langfuse.client.StatefulSpanClient object at 0x7e0dc9eaba10>,
+  "result": None,
+  "self": <langfuse.decorators.langfuse_decorator.LangfuseDecorator object at 0x7e0c3f0ac410>
+}
+------
+ call in file seer/automation/agent/tools.py [Line 28] (In app)
+    parameters: List[Dict[str, str | List[str] | Dict[str, str]]]
+    required: List[str] = []
+
+    def call(self, **kwargs):
+        try:
+            return self.fn(**kwargs)  <-- SUSPECT LINE
+        except Exception as e:
+            logger.exception(e)
+            return f"Error: {get_full_exception_string(e)}"
+
+
+---
+Variable values at the time of the exception::
+{
+  "kwargs": {
+    "file_path": 'src/app/(secure)/account/components/AccountInfoList.tsx',
+    "repo_name": 'runna-app/rb-web'
+  },
+  "self": FunctionTool(name='expand_document', description="Given a document path, returns the entire document text.\n- Note: To save time and money, if you're looking to expand multiple documents, call this tool multiple times in the same message.\n- If a document has already been expanded earlier in the conversation, don't use this tool again for the same file path.", fn=<bound method BaseTools.expand_document of <seer.automation.autofix.tools.BaseTools object at 0x7e0ddacda810>>, parameters=[{'name': 'file_path', 'type': 'string', 'description': 'The document path to expand.'}, {'name': 'repo_name', 'type': 'string', 'description': 'Name of the repository containing the file.'}], required=['file_path', 'repo_name'])
+}
+------
+
+</exception0>
+</exceptions>
+
+</sentry_issue>
+<sentry_issue><issue_id>6506236508</issue_id>
+<title>ValidationError: 3 validation errors for RequestDetails</title>
+<message>
+Error summarizing issue
+</message>
+<exceptions>
+<exception_0 is_exception_handled="yes" type="ValidationError" message="3 validation errors for RequestDetails
+data.dict[str,any]
+  Input should be a valid dictionary [type=dict_type, input_value=False, input_type=bool]
+    For further information visit https://errors.pydantic.dev/2.6/v/dict_type
+data.str
+  Input should be a valid string [type=string_type, input_value=False, input_type=bool]
+    For further information visit https://errors.pydantic.dev/2.6/v/string_type
+data.list[any]
+  Input should be a valid list [type=list_type, input_value=False, input_type=bool]
+    For further information visit https://errors.pydantic.dev/2.6/v/list_type">
+ from_event in file seer/automation/models.py [Line 378] (In app)
+            elif entry.get("type") == "stacktrace":
+                stacktraces.append(Stacktrace.model_validate(entry.get("data", {})))
+            elif entry.get("type") == "message":
+                message = entry.get("data", {}).get("formatted", None)
+            elif entry.get("type") == "request":
+                request = RequestDetails.model_validate(entry.get("data", {}))  <-- SUSPECT LINE
+
+        return cls(
+            title=error_event.get("title"),
+            transaction_name=transaction_name,
+            exceptions=exceptions,
+------
+ summarize_issue in file seer/automation/summarize/issue.py [Line 80] (In app)
+@observe(name="Summarize Issue")
+@inject
+def summarize_issue(
+    request: SummarizeIssueRequest, llm_client: LlmClient = injected
+) -> IssueSummaryWithScores:
+    event_details = EventDetails.from_event(request.issue.events[0])  <-- SUSPECT LINE
+    connected_event_details = (
+        [
+            EventDetails.from_event(issue.events[0])
+            for issue in request.connected_issues
+            if issue.events
+---
+Variable values at the time of the exception::
+{
+  "llm_client": <seer.automation.agent.client.LlmClient object at 0x799554628ad0>,
+  "request": SummarizeIssueRequest(group_id=6549146675, issue=IssueDetails(id=6549146675, title="TypeError: argument of type 'bool' is not iterable", short_id='SENTRY-3SDQ', events=[{'title': "TypeError: argument of type 'bool' is not iterable", 'entries': [{'data': {'values': [{'type': 'TypeError', 'value': "argument of type 'bool' is not iterable", 'mechanism': {'type': 'generic', 'handled': True}, 'threadId': None, 'module': None, 'stacktrace': {'frames': [{'filename': 'sentry/api/base.py', 'absPath': '/usr/src/sentry/src/sentry/api/base.py', 'module': 'sentry.api.base', 'package': None, 'platform': None, 'instructionAddr': None, 'symbolAddr': None, 'function': 'handle_exception_with_details', 'rawFunction': None, 'symbol': None, 'context': [[310, '        """'], [311, '        try:'], [312, "            # Django REST Framework's built-in exception handler. If `settings.EXCEPTION_HANDLER`"], [313, "            # exists and returns a response, that's used. Otherwise, `exc` is just re-raised"], [314, '            # an...
+}
+------
+ wrapper in file seer/dependency_injection.py [Line 227] (In app)
+                    try:
+                        new_kwds[k] = resolve(argspec.annotations[k])
+                    except KeyError:
+                        raise AssertionError(f"Cannot inject argument {k} as it lacks annotations")
+
+        return c(*args, **new_kwds)  # type: ignore  <-- SUSPECT LINE
+
+    if inspect.isclass(original_type):
+        return type(original_type.__name__, (original_type,), dict(__init__=wrapper))  # type: ignore
+
+    return wrapper  # type: ignore
+---
+Variable values at the time of the exception::
+{
+  "args": [
+    SummarizeIssueRequest(group_id=6549146675, issue=IssueDetails(id=6549146675, title="TypeError: argument of type 'bool' is not iterable", short_id='SENTRY-3SDQ', events=[{'title': "TypeError: argument of type 'bool' is not iterable", 'entries': [{'data': {'values': [{'type': 'TypeError', 'value': "argument of type 'bool' is not iterable", 'mechanism': {'type': 'generic', 'handled': True}, 'threadId': None, 'module': None, 'stacktrace': {'frames': [{'filename': 'sentry/api/base.py', 'absPath': '/usr/src/sentry/src/sentry/api/base.py', 'module': 'sentry.api.base', 'package': None, 'platform': None, 'instructionAddr': None, 'symbolAddr': None, 'function': 'handle_exception_with_details', 'rawFunction': None, 'symbol': None, 'context': [[310, '        """'], [311, '        try:'], [312, "            # Django REST Framework's built-in exception handler. If `settings.EXCEPTION_HANDLER`"], [313, "            # exists and returns a response, that's used. Otherwise, `exc` is just re-raised"], [314, '            # an...
+  ],
+  "argspec": [
+    [
+    'request',
+    'llm_client'
+  ],
+    None,
+    None,
+    [
+    <seer.dependency_injection._Injected object at 0x79970ace40d0>
+  ],
+    None,
+    {
+    "llm_client": <class 'seer.automation.agent.client.LlmClient'>,
+    "request": <class 'seer.automation.summarize.models.SummarizeIssueRequest'>,
+    "return": <class 'seer.automation.summarize.issue.IssueSummaryWithScores'>
+  }
+  ],
+  "d": <seer.dependency_injection._Injected object at 0x79970ace40d0>,
+  "i": 0,
+  "new_kwds": {
+    "llm_client": <seer.automation.agent.client.LlmClient object at 0x799554628ad0>
+  }
+}
+------
+ sync_wrapper in file langfuse/decorators/langfuse_decorator.py [Line 254] (Not in app)
+                func_kwargs=kwargs,
+            )
+            result = None
+
+            try:
+                result = func(*args, **kwargs)  <-- SUSPECT LINE
+            except Exception as e:
+                self._handle_exception(observation, e)
+            finally:
+                result = self._finalize_call(
+                    observation, result, capture_output, transform_to_string
+---
+Variable values at the time of the exception::
+{
+  "args": [
+    SummarizeIssueRequest(group_id=6549146675, issue=IssueDetails(id=6549146675, title="TypeError: argument of type 'bool' is not iterable", short_id='SENTRY-3SDQ', events=[{'title': "TypeError: argument of type 'bool' is not iterable", 'entries': [{'data': {'values': [{'type': 'TypeError', 'value': "argument of type 'bool' is not iterable", 'mechanism': {'type': 'generic', 'handled': True}, 'threadId': None, 'module': None, 'stacktrace': {'frames': [{'filename': 'sentry/api/base.py', 'absPath': '/usr/src/sentry/src/sentry/api/base.py', 'module': 'sentry.api.base', 'package': None, 'platform': None, 'instructionAddr': None, 'symbolAddr': None, 'function': 'handle_exception_with_details', 'rawFunction': None, 'symbol': None, 'context': [[310, '        """'], [311, '        try:'], [312, "            # Django REST Framework's built-in exception handler. If `settings.EXCEPTION_HANDLER`"], [313, "            # exists and returns a response, that's used. Otherwise, `exc` is just re-raised"], [314, '            # an...
+  ],
+  "capture_output": True,
+  "func": <function summarize_issue at 0x799564294f40>,
+  "observation": <langfuse.client.StatefulTraceClient object at 0x79952fcc3450>,
+  "result": None,
+  "self": <langfuse.decorators.langfuse_decorator.LangfuseDecorator object at 0x79956551d390>
+}
+------
+ _handle_exception in file langfuse/decorators/langfuse_decorator.py [Line 520] (Not in app)
+    ):
+        if observation:
+            _observation_params_context.get()[observation.id].update(
+                level="ERROR", status_message=str(e)
+            )
+        raise e  <-- SUSPECT LINE
+
+    def _wrap_sync_generator_result(
+        self,
+        observation: Optional[
+            Union[
+---
+Variable values at the time of the exception::
+{
+  "e": 3 validation errors for RequestDetails
+  data.dict[str,any]
+    Input should be a valid dictionary [type=dict_type, input_value=False, input_type=bool]
+      For further information visit https://errors.pydantic.dev/2.6/v/dict_type
+  data.str
+    Input should be a valid string [type=string_type, input_value=False, input_type=bool]
+      For further information visit https://errors.pydantic.dev/2.6/v/string_type
+  data.list[any]
+    Input should be a valid list [type=list_type, input_value=False, input_type=bool]
+      For further information visit https://errors.pydantic.dev/2.6/v/list_type,
+  "observation": <langfuse.client.StatefulTraceClient object at 0x79952fcc3450>,
+  "self": <langfuse.decorators.langfuse_decorator.LangfuseDecorator object at 0x79956551d390>
+}
+------
+ sync_wrapper in file langfuse/decorators/langfuse_decorator.py [Line 256] (Not in app)
+            result = None
+
+            try:
+                result = func(*args, **kwargs)
+            except Exception as e:
+                self._handle_exception(observation, e)  <-- SUSPECT LINE
+            finally:
+                result = self._finalize_call(
+                    observation, result, capture_output, transform_to_string
+                )
+
+---
+Variable values at the time of the exception::
+{
+  "args": [
+    SummarizeIssueRequest(group_id=6549146675, issue=IssueDetails(id=6549146675, title="TypeError: argument of type 'bool' is not iterable", short_id='SENTRY-3SDQ', events=[{'title': "TypeError: argument of type 'bool' is not iterable", 'entries': [{'data': {'values': [{'type': 'TypeError', 'value': "argument of type 'bool' is not iterable", 'mechanism': {'type': 'generic', 'handled': True}, 'threadId': None, 'module': None, 'stacktrace': {'frames': [{'filename': 'sentry/api/base.py', 'absPath': '/usr/src/sentry/src/sentry/api/base.py', 'module': 'sentry.api.base', 'package': None, 'platform': None, 'instructionAddr': None, 'symbolAddr': None, 'function': 'handle_exception_with_details', 'rawFunction': None, 'symbol': None, 'context': [[310, '        """'], [311, '        try:'], [312, "            # Django REST Framework's built-in exception handler. If `settings.EXCEPTION_HANDLER`"], [313, "            # exists and returns a response, that's used. Otherwise, `exc` is just re-raised"], [314, '            # an...
+  ],
+  "capture_output": True,
+  "func": <function summarize_issue at 0x799564294f40>,
+  "observation": <langfuse.client.StatefulTraceClient object at 0x79952fcc3450>,
+  "result": None,
+  "self": <langfuse.decorators.langfuse_decorator.LangfuseDecorator object at 0x79956551d390>
+}
+------
+ run_summarize_issue in file seer/automation/summarize/issue.py [Line 202] (In app)
+        "langfuse_user_id": (
+            f"org:{request.organization_slug}" if request.organization_slug else None
+        ),
+    }
+
+    summary = summarize_issue(request, **extra_kwargs)  <-- SUSPECT LINE
+
+    with Session() as session:
+        db_state = summary.to_db_state(request.group_id)
+        session.merge(db_state)
+        session.commit()
+---
+Variable values at the time of the exception::
+{
+  "extra_kwargs": {
+    "langfuse_session_id": 'group:6549146675',
+    "langfuse_tags": [
+      'org:sentry',
+      'project:1',
+      'group:6549146675'
+    ],
+    "langfuse_user_id": 'org:sentry'
+  },
+  "request": SummarizeIssueRequest(group_id=6549146675, issue=IssueDetails(id=6549146675, title="TypeError: argument of type 'bool' is not iterable", short_id='SENTRY-3SDQ', events=[{'title': "TypeError: argument of type 'bool' is not iterable", 'entries': [{'data': {'values': [{'type': 'TypeError', 'value': "argument of type 'bool' is not iterable", 'mechanism': {'type': 'generic', 'handled': True}, 'threadId': None, 'module': None, 'stacktrace': {'frames': [{'filename': 'sentry/api/base.py', 'absPath': '/usr/src/sentry/src/sentry/api/base.py', 'module': 'sentry.api.base', 'package': None, 'platform': None, 'instructionAddr': None, 'symbolAddr': None, 'function': 'handle_exception_with_details', 'rawFunction': None, 'symbol': None, 'context': [[310, '        """'], [311, '        try:'], [312, "            # Django REST Framework's built-in exception handler. If `settings.EXCEPTION_HANDLER`"], [313, "            # exists and returns a response, that's used. Otherwise, `exc` is just re-raised"], [314, '            # an...
+}
+------
+ summarize_issue_endpoint in file seer/app.py [Line 386] (In app)
+
+
+@json_api(blueprint, "/v1/automation/summarize/issue")
+def summarize_issue_endpoint(data: SummarizeIssueRequest) -> SummarizeIssueResponse:
+    try:
+        return run_summarize_issue(data)  <-- SUSPECT LINE
+    except APITimeoutError as e:
+        raise GatewayTimeout from e
+    except Exception as e:
+        logger.exception("Error summarizing issue")
+        raise InternalServerError from e
+---
+Variable values at the time of the exception::
+{
+  "data": SummarizeIssueRequest(group_id=6549146675, issue=IssueDetails(id=6549146675, title="TypeError: argument of type 'bool' is not iterable", short_id='SENTRY-3SDQ', events=[{'title': "TypeError: argument of type 'bool' is not iterable", 'entries': [{'data': {'values': [{'type': 'TypeError', 'value': "argument of type 'bool' is not iterable", 'mechanism': {'type': 'generic', 'handled': True}, 'threadId': None, 'module': None, 'stacktrace': {'frames': [{'filename': 'sentry/api/base.py', 'absPath': '/usr/src/sentry/src/sentry/api/base.py', 'module': 'sentry.api.base', 'package': None, 'platform': None, 'instructionAddr': None, 'symbolAddr': None, 'function': 'handle_exception_with_details', 'rawFunction': None, 'symbol': None, 'context': [[310, '        """'], [311, '        try:'], [312, "            # Django REST Framework's built-in exception handler. If `settings.EXCEPTION_HANDLER`"], [313, "            # exists and returns a response, that's used. Otherwise, `exc` is just re-raised"], [314, '            # an...,
+  "e": 3 validation errors for RequestDetails
+  data.dict[str,any]
+    Input should be a valid dictionary [type=dict_type, input_value=False, input_type=bool]
+      For further information visit https://errors.pydantic.dev/2.6/v/dict_type
+  data.str
+    Input should be a valid string [type=string_type, input_value=False, input_type=bool]
+      For further information visit https://errors.pydantic.dev/2.6/v/string_type
+  data.list[any]
+    Input should be a valid list [type=list_type, input_value=False, input_type=bool]
+      For further information visit https://errors.pydantic.dev/2.6/v/list_type
+}
+------
+
+</exception0>
+</exceptions>
+
+</sentry_issue></sentry_issues>
+
+# Your Goal:
+Carefully review the code changes in the diff, understand the context and surface any potential bugs that might be introduced by the changes. In your review focus on actual bugs. You should IGNORE code style, nit suggestions, and anything else that is not likely to cause a production issue.
+You SHOULD make suggestions based on the warnings and issues provided, as well as your own analysis of the code.
+Follow ALL the guidelines!!!
+
+# Guidelines:
+- Return AT MOST 5 suggestions, and AT MOST 1 suggestion per line of code.
+- Focus ONLY on _bugs_ and _security issues_.
+- Only surface issues that are caused by the code changes in the diff, or directly related to a warning.
+- Do NOT propose issues if the are outside the diff.
+- ALWAYS include the exact file path and line of the suggestion.
+- Assign a severity score and confidence score to each suggestion, from 0 to 1. The score should be granular, e.g., 0.432.
+    - Severity score: 1 being "guaranteed an _uncaught_ exception will happen and not be caught by the code"; 0.5 being "an exception will happen but it's being caught" OR "an exception may happen depending on inputs"; 0 being "no exception will happen";
+    - Confidence score: 1 being "I am 100%% confident that this is a bug";
+- Before giving your final answer, in the `analysis` section (500 to 1000 words), think carefully and out loud about which specific warnings caused by the code change will cause production errors.
+  Apply a high level of scrutiny when thinking through whether there's a clear, explainable, and evidenced pathway between the warning and a production error.
+  Our engineers hate sorting through noisy suggestions. So we're not asking if a warning or issue could hypothetically, under unknown and unevidenced circumstances, vaguely cause an error. You're more than welcome to dismiss warnings that are not going to cause errors.
+  Ignore issues or warnings that aren't caused by the code change.
+  Pay more attention to warnings and issues around wrong types, values, and syntax. Linter warnings about unnecessary imports, suboptimal style, etc. are rarely critical.
+  Express in words what you're uncertain about, and what you're more confident about. You are more than free to point out that the warnings and issues are not clearly problematic in context of the code change, and should be ignored.

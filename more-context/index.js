@@ -12,6 +12,6 @@ const ORGANIZATION_SLUG = 'sentry'; // Replace with the actual organization slug
 const ISSUE_ID = '6382411120'; // Replace with the actual issue ID
 
 
-fetchInterserviceContext(ORGANIZATION_SLUG, ISSUE_ID);
+//fetchInterserviceContext(ORGANIZATION_SLUG, ISSUE_ID);
 
 fetchIntraserviceContext(ORGANIZATION_SLUG, ISSUE_ID);

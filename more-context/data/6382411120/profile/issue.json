@@ -222,9 +222,9 @@
         "hasPasswordAuth": false,
         "isManaged": false,
         "dateJoined": "2024-12-16T20:02:49.967602Z",
-        "lastLogin": "2025-04-08T17:20:59.291874Z",
+        "lastLogin": "2025-04-15T17:22:41.354027Z",
         "has2fa": false,
-        "lastActive": "2025-04-09T02:24:19.559438Z",
+        "lastActive": "2025-04-16T00:57:46.785165Z",
         "isSuperuser": true,
         "isStaff": true,
         "experiments": {},
@@ -257,9 +257,9 @@
         "hasPasswordAuth": false,
         "isManaged": false,
         "dateJoined": "2024-12-16T20:02:49.967602Z",
-        "lastLogin": "2025-04-08T17:20:59.291874Z",
+        "lastLogin": "2025-04-15T17:22:41.354027Z",
         "has2fa": false,
-        "lastActive": "2025-04-09T02:24:19.559438Z",
+        "lastActive": "2025-04-16T00:57:46.785165Z",
         "isSuperuser": true,
         "isStaff": true,
         "experiments": {},
@@ -329,9 +329,9 @@
       "hasPasswordAuth": false,
       "isManaged": false,
       "dateJoined": "2020-06-12T23:59:32.545009Z",
-      "lastLogin": "2025-04-04T00:10:07.866467Z",
+      "lastLogin": "2025-04-11T00:20:25.213583Z",
       "has2fa": true,
-      "lastActive": "2025-04-09T05:13:02.914270Z",
+      "lastActive": "2025-04-16T16:02:07.723052Z",
       "isSuperuser": true,
       "isStaff": true,
       "experiments": {},
@@ -359,9 +359,9 @@
       "hasPasswordAuth": false,
       "isManaged": false,
       "dateJoined": "2024-07-16T16:10:54.673196Z",
-      "lastLogin": "2025-04-03T15:18:51.026048Z",
+      "lastLogin": "2025-04-09T17:14:19.837258Z",
       "has2fa": true,
-      "lastActive": "2025-04-09T05:21:42.849103Z",
+      "lastActive": "2025-04-16T16:05:16.068079Z",
       "isSuperuser": true,
       "isStaff": true,
       "experiments": {},
@@ -379,8 +379,8 @@
         "defaultIssueEvent": "recommended",
         "timezone": "UTC",
         "clock24Hours": false,
+        "prefersNextjsInsightsOverview": true,
         "prefersIssueDetailsStreamlinedUI": true,
-        "prefersSpecializedProjectOverview": {},
         "prefersStackedNavigation": false,
         "prefersChonkUI": false,
         "quickStartDisplay": {
@@ -408,7 +408,7 @@
             "id": "okta",
             "name": "Okta"
           },
-          "dateSynced": "2025-04-08T13:24:15.834769Z",
+          "dateSynced": "2025-04-16T10:14:23.219309Z",
           "dateVerified": "2025-04-03T15:18:50.888636Z"
         },
         {
@@ -422,7 +422,7 @@
             "id": "okta",
             "name": "Okta"
           },
-          "dateSynced": "2025-04-08T11:36:29.072872Z",
+          "dateSynced": "2025-04-16T08:18:25.562699Z",
           "dateVerified": "2025-02-12T22:19:17.076802Z"
         },
         {
@@ -436,8 +436,8 @@
             "id": "github",
             "name": "GitHub"
           },
-          "dateSynced": "2025-04-08T16:53:29.530384Z",
-          "dateVerified": "2025-04-08T16:53:29.530384Z"
+          "dateSynced": "2025-04-16T14:35:07.454303Z",
+          "dateVerified": "2025-04-16T14:35:07.454303Z"
         }
       ],
       "lastSeen": "2025-03-11T20:07:40.090014Z"
@@ -452,9 +452,9 @@
       "hasPasswordAuth": false,
       "isManaged": false,
       "dateJoined": "2024-12-16T20:02:49.967602Z",
-      "lastLogin": "2025-04-08T17:20:59.291874Z",
+      "lastLogin": "2025-04-15T17:22:41.354027Z",
       "has2fa": false,
-      "lastActive": "2025-04-09T02:24:19.559438Z",
+      "lastActive": "2025-04-16T00:57:46.785165Z",
       "isSuperuser": true,
       "isStaff": true,
       "experiments": {},
@@ -480,135 +480,107 @@
   "stats": {
     "24h": [
       [
-        1744088400,
+        1744732800,
         0
       ],
       [
-        1744092000,
+        1744736400,
         0
       ],
       [
-        1744095600,
+        1744740000,
         0
       ],
       [
-        1744099200,
+        1744743600,
         0
       ],
       [
-        1744102800,
+        1744747200,
         0
       ],
       [
-        1744106400,
+        1744750800,
         0
       ],
       [
-        1744110000,
+        1744754400,
         0
       ],
       [
-        1744113600,
+        1744758000,
         0
       ],
       [
-        1744117200,
+        1744761600,
         0
       ],
       [
-        1744120800,
+        1744765200,
         0
       ],
       [
-        1744124400,
+        1744768800,
         0
       ],
       [
-        1744128000,
+        1744772400,
         0
       ],
       [
-        1744131600,
+        1744776000,
         0
       ],
       [
-        1744135200,
+        1744779600,
         0
       ],
       [
-        1744138800,
+        1744783200,
         0
       ],
       [
-        1744142400,
+        1744786800,
         0
       ],
       [
-        1744146000,
+        1744790400,
         0
       ],
       [
-        1744149600,
+        1744794000,
         0
       ],
       [
-        1744153200,
+        1744797600,
         0
       ],
       [
-        1744156800,
+        1744801200,
         0
       ],
       [
-        1744160400,
+        1744804800,
         0
       ],
       [
-        1744164000,
+        1744808400,
         0
       ],
       [
-        1744167600,
+        1744812000,
         0
       ],
       [
-        1744171200,
+        1744815600,
         0
       ],
       [
-        1744174800,
+        1744819200,
         0
       ]
     ],
     "30d": [
-      [
-        1741564800,
-        5
-      ],
-      [
-        1741651200,
-        0
-      ],
-      [
-        1741737600,
-        0
-      ],
-      [
-        1741824000,
-        0
-      ],
-      [
-        1741910400,
-        0
-      ],
-      [
-        1741996800,
-        0
-      ],
-      [
-        1742083200,
-        0
-      ],
       [
         1742169600,
         0
@@ -704,6 +676,34 @@
       [
         1744156800,
         0
+      ],
+      [
+        1744243200,
+        0
+      ],
+      [
+        1744329600,
+        0
+      ],
+      [
+        1744416000,
+        0
+      ],
+      [
+        1744502400,
+        0
+      ],
+      [
+        1744588800,
+        0
+      ],
+      [
+        1744675200,
+        0
+      ],
+      [
+        1744761600,
+        0
       ]
     ]
   },
@@ -718,9 +718,9 @@
       "hasPasswordAuth": false,
       "isManaged": false,
       "dateJoined": "2024-12-16T20:02:49.967602Z",
-      "lastLogin": "2025-04-08T17:20:59.291874Z",
+      "lastLogin": "2025-04-15T17:22:41.354027Z",
       "has2fa": false,
-      "lastActive": "2025-04-09T02:24:19.559438Z",
+      "lastActive": "2025-04-16T00:57:46.785165Z",
       "isSuperuser": true,
       "isStaff": true,
       "experiments": {},

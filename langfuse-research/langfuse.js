@@ -13,7 +13,10 @@ const LANGFUSE_SECRET_KEY = process.env.LANGFUSE_SECRET_KEY;
 const headers = {
   'Authorization': 'Basic ' + Buffer.from(`${LANGFUSE_PUBLIC_KEY}:${LANGFUSE_SECRET_KEY}`).toString('base64'),
   'Content-Type': 'application/json',
+<<<<<<< HEAD
   'Cookie': 'PASTE HERE - pulling from env has some parsing errors I couldnt figure out'
+=======
+>>>>>>> origin/main
 };
 
 // Create axios instance for Langfuse API

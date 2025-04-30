@@ -3,8 +3,9 @@ import { fetchTracesByName, getTraceById } from './langfuse.js';
 
 export async function analyzeAiPrReview() {
   try {
+    const name = "Codegen - PR Review";
     // Fetch traces with "pr review" in the name
-    const tracesResult = await fetchTracesByName("Codegen - PR Review", 100);
+    const tracesResult = await fetchTracesByName(name, 100);
 
     if (!tracesResult.data || tracesResult.data.length === 0) {
       console.error('No traces found with "pr review" in the name');
@@ -56,9 +57,17 @@ export async function analyzeAiPrReview() {
         for (let i = 0; i < toolCalls.length; i++) {
           const toolCall = toolCalls[i];
           const resultObservation = traceDetails.observations.find(obs => {
-            return ["Semantic File Search", "Grep Search", "Tree", "Expand Document"].some(name => 
-              obs.name && obs.name.includes(name)
-            );
+            // Match the observation name with the function name from the tool call
+            const functionName = toolCall.function;
+            if (!functionName || !obs.name) return false;
+            
+            // Convert function names like "semantic_file_search" to "Semantic File Search"
+            const formattedFunctionName = functionName
+              .split('_')
+              .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(' ');
+              
+            return obs.name.includes(formattedFunctionName);
           });
 
           if (resultObservation) {
@@ -131,15 +140,16 @@ export async function analyzeAiPrReview() {
       });
       
       // Save results to a file
-      fs.writeFileSync('./results/pr-review-tool-calls.json', JSON.stringify(tracesWithToolCalls, null, 2));
-      console.log('Results saved to pr-review-tool-calls.json');
+      const nameLower = name.toLowerCase().replace(/\s+/g, '-');
+      fs.writeFileSync(`./results/${nameLower}-tool-calls.json`, JSON.stringify(tracesWithToolCalls, null, 2));
+      console.log(`Results saved to ${nameLower}-tool-calls.json`);
       
       // Save tool usage statistics to a file
-      fs.writeFileSync('./results/pr-review-tool-usage.json', JSON.stringify({
+      fs.writeFileSync(`./results/${nameLower}-tool-usage.json`, JSON.stringify({
         counts: toolUsageCounts,
         resultCounts: toolResultCounts
       }, null, 2));
-      console.log('Tool usage statistics saved to pr-review-tool-usage.json');
+      console.log(`Tool usage statistics saved to ${nameLower}-tool-usage.json`);
     } else {
       console.log('No traces with tool calls found');
     }

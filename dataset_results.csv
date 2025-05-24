@@ -1,0 +1,163 @@
+id,org,repo,pr_id,commit_sha,link_to_pr,diff_num_files,diff_num_chars,bug_description1,bug_encoded_location1,bug_description2,bug_encoded_location2
+8ef8d7e8-bde9-4557-8447-8ac408a99ece,getsentry,seer,2550,8699184dc89b2bf2d3545e59ed8e38dad8981af4,https://github.com/getsentry/seer/pull/2550/files,9,66951,"In _download_repos, the RepoManager initialization assumes that `request.organization_id` is present, but it's not. When request is a CodegenBaseRequest, it's missing the organization_id field. This causes an AttributeError. Occurs in pr_review_task during repo initialization.",src/seer/automation/autofix/tools/tools.py:73,"In seer/automation/codebase/repo_manager.py in initialize at line 161, where ThreadPoolExecutor.submit is called without the required fn (function) argument.",seer/automation/codebase/repo_manager.py:161
+6c95edc4-212c-40df-91d5-44c06fe39814,getsentry,seer,2175,e2e9c7edae4c55c7722fa7f0614b06973ad48d50,https://github.com/getsentry/seer/pull/2175/files,1,1841,"IndexError: list index out of range in github/PaginatedList.py and seer/automation/codebase/repo_client.py during PR creation. The error occurs in commit_changes_task. The pulls list, returned by repo.create_pull, may be empty, causing the IndexError when accessing pulls[0]. The GitHub API returns a totalCount greater than 0, indicating that a PR exists, but the actual pulls list is empty due to the malformed head parameter.",src/seer/automation/codebase/repo_client.py:696,"In `create_pr_from_branch`, the `head` parameter passed to `get_pulls()` inputs `branch.ref`, which looks like `refs/heads/branch_name`. GitHub's API expects the `head` parameter to be in the format `{owner}:{branch_name}`.",src/seer/automation/codebase/repo_client.py:685
+63066762-b383-4d63-b9b0-b02da070c3d9,getsentry,seer,2344,b14c8128f0a39161c3e62e3017ef0feede5e266b,https://github.com/getsentry/seer/pull/2344/files,1,7205,"ValueError: unexpected '{' in field name during error event parsing. The error is due to incorrect string formatting within the format_event_without_breadcrumbs function, specifically with the use of curly braces. The code attempts to use both f-string interpolation and `.format()` on the same string.",src/seer/automation/models.py:449,"`request = RequestDetails.model_validate(entry.get('data', {}))` can result in an unhandled validation error. Specifically, the `entry['data']` could be a list or a number, which violates the assumption made in the PR: `entry['data']` is has type `dict[str, Any] | str | None`.",src/seer/automation/models.py:373
+6144ec83-5ce9-427f-bafb-d9a8fcd10dec,codecov,codecov-api,345,df7370d6bdd3985b628036c6384277a9ca88ba51,https://github.com/codecov/codecov-api/pull/345/files,2,6454,"
+The Branch Django ORM model does not have a unique constraint on the combination of name and repository_id.
+It allowed multiple branches with the same name and repository ID to be selected, leading to unexpected behavior
+when updating the Branch object.
+",upload/helpers.py:460~470,"",
+f7679a0d-8fc4-47d8-a205-496851434a68,codecov,codecov-api,899,809a6c06a3b1349a5b361e98b46371d2a089ce84,https://github.com/codecov/codecov-api/pull/899/files,2,13755,"
+When initializing the prometheus Counter object it specified a repo_visibility parameter as a cardinality tag.
+However when the call to increment the counter this parameter was not passed in leading to a prometheus metrics error.
+",upload/views/bundle_analysis.py:84~92,"",
+b8873004-f93f-492a-b520-2e45a98d5c87,codecov,codecov-api,1162,2074673143ea4217119b02621f6ae9dcd47f6c46,https://github.com/codecov/codecov-api/pull/1162/files,6,10236,"In the Commit model, the author attribute is nullable. When the author is not set, calling commit.author.ownerid will raise an error. NoneType has no attribute ownerid.
+",upload/views/uploads.py:174,"",
+ff6fe211-aab4-44d4-9194-5105e1d76f2b,codecov,codecov-api,444,2e87e4a52374fe367e11dafa483fa887dc2cfb6e,https://github.com/codecov/codecov-api/pull/444/files,8,15096,"
+Deleting a field in the GraphQL API schema caused a breakage to occur on the frontend.
+The frontend repo is gazebo, it was still referencing the sizeTotal and loadTimeTotal fields.
+Leading to a 500 error on the API and malfunctioning frontend.
+",graphql_api/types/bundle_analysis/base.graphql:33~34,"",
+e4f4fa4f-5472-423a-933e-83f822c0715c,codecov,gazebo,3464,fea7d530d54ff34dbfa808bb2261bf65aa05c07d,https://github.com/codecov/gazebo/pull/3464/files,13,37979,"
+The way the props were implemented in the AnalyticsPage was incorrect. The correct implementation should have been:
+      <ChartSelectors
+        params={{params}}
+        updateParams={{updateParams}}
+        active={{true}}
+        sortItem={{sortItem}}
+      />
+      <Chart
+        startDate={params?.startDate}
+        endDate={params?.endDate}
+        repositories={params?.repositories}
+      />
+The wrong implementation was:
+      <ChartSelectors
+        startDate={params?.startDate}
+        endDate={params?.endDate}
+        repositories={params?.repositories}
+        updateParams={updateParams}
+        active={true}
+        sortItem={sortItem}
+      />
+      <Chart params={params} />
+",src/pages/AnalyticsPage/AnalyticsPage.jsx:45~52,"",
+05f47e97-e85a-490b-a96b-58a48903b7de,codecov,gazebo,3621,6a557247e55aab2c04dab02020c781fd140f0267,https://github.com/codecov/gazebo/pull/3621/files,5,5204,"
+This PR has an issue with the Zod validation schema and how it handled the union type. 
+Before:
+
+const BundleAnalysisReportSchema = z.object({
+ __typename: z.literal('BundleAnalysisReport'),
+ isCached: z.boolean(),
+})
+
+const BundleAnalysisReportUnion = z.union([
+ BundleAnalysisReportSchema,
+ MissingHeadReportSchema.shape.__typename,
+])
+
+After:
+
+const BundleAnalysisReportSchema = z.object({
+ __typename: z.literal('BundleAnalysisReport'),
+ isCached: z.boolean(),
+})
+
+const BundleAnalysisReportUnion = z.discriminatedUnion('__typename', [
+ BundleAnalysisReportSchema,
+ z.object({ __typename: MissingHeadReportSchema.shape.__typename }),
+])
+",src/pages/CommitDetailPage/queries/CommitPageDataQueryOpts.tsx:20~28,"",
+ab8441b7-7c4b-4631-8b91-b1a3abf04508,getsentry,seer,2306,b3e29fa391a9c83a29fa48192b9aa596a93461d9,https://github.com/getsentry/seer/pull/2306/files,1,859,"A TypeError is raised when attempting to dump the request object after failing Pydantic validation. The error occurs because the Flask request object is not JSON serializable.",src/seer/json_api.py:137,"",
+e6703deb-deb8-4854-bd79-8847dd67a7be,getsentry,seer,2245,0c5d8021f8a0eb71163ccc4345bd3f9ff21e0975,https://github.com/getsentry/seer/pull/2245/files,4,55330,"In _ensure_repos_downloaded, the ThreadPoolExecutor here needs initializer=copy_modules_initializer() to be passed. Without it, there will be a FactoryNotFound error: Cannot resolve '<class 'seer.configuration.AppConfig'>', no module injector is currently active.",src/seer/automation/autofix/tools.py:457,"",
+b644ce32-c92d-4c78-bbcf-59383e69a1c9,getsentry,seer,2589,fdecfd2c7654fe330e5cd1056ffcfb2c15af16bf,https://github.com/getsentry/seer/pull/2589/files,7,7484,"In the `generate_structured` method, the `thinking_config` will be `None` if `thinking_budget` is Falsy. The Gemini documentation indicates that the LLM may think or not (referred to as 'dynamic thinking') if `thinking_config is None`. The code change intended that the LLM does *not* think before responding when `thinking_budget=0`, which is what the assisted-query code supplies. This change can cause the latency of the assisted-query endpoint to increase. It could cause spurious timeout errors, as this endpoint is sensitive to latency.",src/seer/automation/agent/client.py:1002,"",
+7d273d8a-8d2b-4958-b413-c5c4c8845c43,getsentry,seer,1870,4aca350c2b928f8610801ccd0c93ac1911b4f43e,https://github.com/getsentry/seer/pull/1870/files,29,105612,"IndexError in root_cause_task due to out-of-range list access. The root_cause_output.causes list may be empty. Occurs when accessing root_cause_output.causes[0].id.",src/seer/automation/autofix/steps/root_cause_step.py:117,"",
+573211ca-29ba-4c2a-aae4-4c5341c9cd2e,getsentry,seer,2508,6925ec18a8418960476ce0f8ca6fe5f43534b4f8,https://github.com/getsentry/seer/pull/2508/files,6,30915,"The Dockerfile doesn't install the ripgrep package. This is necessary for the new run_ripgrep_in_repo tool. The ripgrep package is installed in the Lightweight.Dockerfile, but this is only used for local development. The production environment uses Dockerfile.",src/seer/automation/autofix/tools/ripgrep_search.py:15,"",
+f7a15e66-c645-45ea-a3b8-ef60cd7f13f6,getsentry,seer,2198,fcd6dab91b956c0853a6393ed0fa394a9eb7c89f,https://github.com/getsentry/seer/pull/2198/files,10,47635,"The process_event_paths method is called to annotate and correct file paths within the EventDetails object, but its return value is incorrectly assigned. error_event_details = self.context.process_event_paths(error_event_details). process_event_paths modifies the error_event_details object in-place but implicitly returns None, which is then assigned back to error_event_details. The code attempts to call format_event_without_breadcrumbs on the now-None error_event_details object, resulting in an AttributeError.",src/seer/automation/autofix/tools.py:488,"",
+7eb99222-4a5f-4cde-896a-2c6af86aaf74,getsentry,seer,2393,4b719b3b849f48845a3702b7d458bbe06959eb15,https://github.com/getsentry/seer/pull/2393/files,9,82545,"The raw_lines_to_lines function encounters a line starting with '\', indicating a 'No newline at end of file' marker, and raises a ValueError because it doesn't handle this line type. The raw_lines_to_lines function needs to handle lines starting with a backslash.",src/seer/automation/models.py:1002,"",
+3a38bbf4-5363-405f-b552-e7be7e70c0aa,getsentry,seer,2081,9a236024ed66d0dca520c7da0929ffdb637fcede,https://github.com/getsentry/seer/pull/2081/files,15,55286,"The resolve_comment_thread function retrieves the AutofixContinuation state and attempts to access the active_comment_thread for a specific step. The active_comment_thread for the given step_index is None, but the code attempts to access its id attribute without a null check, resulting in an AttributeError.",src/seer/automation/autofix/tasks.py:881,"",
+f2e83a82-ebc4-4d99-a65a-6e504a5f6834,getsentry,seer,2327,36703ee4cd0b66f2125f7dbce089b5d04bbcab93,https://github.com/getsentry/seer/pull/2327/files,2,26986,"The tmp_dir variable, used for repo download, can unexpectedly be None, causing the TypeError when attempting to update it. The issue was that: BaseTools.cleanup() incorrectly set tmp_dir to None, causing a TypeError when the background thread tried to update it.",src/seer/automation/autofix/tools.py:85,"",
+4109f741-4b86-48cd-b80a-0e4359cd715c,getsentry,seer,2642,5013bef09bedcd6ece2fecfafbf39922fd85cf3e,https://github.com/getsentry/seer/pull/2642/files,5,12290,"Changing the `response_format` to a list can cause the LLM to return an empty list, especially since the prompt does not indicate that it must return a list with at least one item. Instead, it says it must not exceed 3 items. In the rare case that the LLM returns an empty list (because it couldn't come up with any reasonable queries, or a prompt injection), then the Sentry-side client calling this assisted query endpoint will crash. The client expects that there is at least 1 response; the line `data = data['responses'][0]` will raise an `IndexError`.",src/seer/automation/assisted_query/assisted_query.py:51,"",
+3245b84c-1d66-46b4-a520-bbf7cfd5901a,getsentry,seer,2128,e2e074687e6c7736cd70f4aa77b3e76ddaa472e9,https://github.com/getsentry/seer/pull/2128/files,4,12418,"The _fetch_issues_for_pr_file function makes an RPC call to Sentry's get_issues_related_to_file_patches endpoint. The Sentry backend's get_issues_related_to_file_patches endpoint fails to find any projects associated with the given file. Because no projects were found, the Sentry backend omits the file from the response dictionary, deviating from the expected API contract. The _fetch_issues_for_pr_file function receives the RPC response and encounters an AssertionError. The assertion assert list(pr_filename_to_issues.keys()) == [pr_file.filename] fails because the key pr_file.filename is not present in the pr_filename_to_issues dictionary.",src/seer/automation/codegen/relevant_warnings_component.py:141,"",
+6d799aff-2632-4b21-a4a5-87eda6fa9797,getsentry,sentry,75630,44ec8db69bb72be3119f1ca91f3d52818b884eab,https://github.com/sentry/sentry/pull/75630/files,2,3069,"
+A change intended to delete pending invites when a member is removed accidentally triggered deletion of legitimate users due to shared logic between members and invites in the OrganizationMember model. Because some long-standing members still had legacy token values, the code misidentified them as unaccepted invites and removed them when any invite was deleted
+",src/sentry/api/endpoints/organization_member/details.py:444-453,"",
+e1f6cdf0-4b92-4d18-9a80-d2059c64cea3,getsentry,sentry,87038,3ea960d03951786007e1d370afe39d2e37586bfe,https://github.com/sentry/sentry/pull/87038/files,1,1725,"
+In this PR, lines 88–89 of src/sentry/feedback/usecases/create_feedback.py modified an API to remove the evidence_display field, which is no longer needed by the frontend. However, the field was also mistakingly removed from evidence_data, which is still required by the alert service. Since the alert service depends on this field, its removal caused unexpected behavior and service issues.
+",src/sentry/feedback/usecases/create_feedback.py:88~89,"",
+e9e5ea23-1f79-4907-b17a-2de867f1aca9,getsentry,sentry,79377,e38ab01e254ddcc5ec09cc0c4763ecc894514fef,https://github.com/sentry/sentry/pull/79377/files,4,6825,"
+Log is added that logs the entire response which may contain a copy of the app which has the client id and client secret
+",src/sentry/sentry_apps/external_requests/select_requester.py:66,"",
+12a6b1d3-3f66-45fb-8600-1d87010694da,getsentry,sentry,70938,8e8095a1f58734e17a3f09b9dfc40f6fda76ef2a,https://github.com/sentry/sentry/pull/70938/files,1,576,"
+The modal in this diff crashed because the line await Promise.all(Object.values(window.__sentry_preload)); was removed, which was necessary for ensuring preload completion before making an API call. This removal was part of an experiment to test behavior without the preload
+
+",static/app/components/modals/sudoModal.tsx:203,"",
+f7b5ce31-43e4-41d2-944d-9a7deb498fcd,getsentry,sentry,68148,c1d6984aa3098f15440af174cb9d44324dc0f2ec,https://github.com/sentry/sentry/pull/68148/files,10,73738,"
+The pull request introduced a bug by changing the serialization logic to access plaintext_token, which is only available immediately after token creation. This caused serialization errors for tokens re-queried from the database, leading the setup-wizard endpoint to return null instead of the API token.
+",src/sentry/api/serializers/models/apitoken.py:34,"",
+c23a7f43-5977-4dbe-8b13-79350e37b4dc,getsentry,sentry,83935,5d06036c403b76c2bb7bc0fafca7a7add6123f49,https://github.com/sentry/sentry/pull/83935/files,1,966,"
+This PR added an auto-submit feature for the 2FA input field in src/sentry/templates/sentry/twofactor.html (lines 55–73), triggering form submission once the OTP reached 6 digits. However, it didn’t disable the submit button after auto-submission, allowing users to manually click it as well. This led to some submissions being sent twice and failing.
+",src/sentry/templates/sentry/twofactor.html:55-73,"",
+abc4289e-bd18-41b1-8e13-15f1d5c5f33c,getsentry,sentry,85752,f0eaab4bf61faa0b12ac4e250f5675d2531a92bd,https://github.com/sentry/sentry/pull/85752/files,4,6109,"
+This PR changed how the OAuth2 redirect_uri is constructed. In src/sentry/identity/oauth2.py (lines 280 and 320), it replaced absolute_uri(pipeline.redirect_url()) with _redirect_url(pipeline). However, _redirect_url uses reverse(...) without wrapping it in absolute_uri, so it returned a relative path instead of the expected absolute URL. This caused issues in integrations that require a fully qualified redirect_uri.
+",src/sentry/identity/oauth2.py:280,"",
+d83ce2a5-9377-4149-97c4-11638d9be8fc,getsentry,sentry,76053,7bca3b69a8ea77cd57da5e85090da9ba519ab637,https://github.com/sentry/sentry/pull/76053/files,3,5066,"
+This PR changed how tooltips determine where to render by introducing a React.Context that supplies a container DOM node for React.createPortal, replacing the previous logic that directly accessed global modal state. In some cases, this container can be undefined, causing the page to crash with the error Target container is not a DOM element. This can happen if a tooltip is rendered outside of a TooltipContext.Provider, if the DOM node hasn’t been mounted yet, or if the node reference becomes stale. Because React.createPortal requires a valid, mounted DOM element, any of these cases can trigger a runtime exception.
+",static/app/components/tooltip.tsx:22,"",
+e9d50ee2-9f68-4ca2-92ff-fabedf03aeb6,getsentry,sentry,89376,79368691ea9212769ae3a2a4e3e3da12c5042595,https://github.com/sentry/sentry/pull/89376/files,3,4418,"
+This PR removed the PENDING value from the enum in src/sentry/models/organizationonboardingtask.py (lines 42 and 74), which caused APIs returning this model to omit tasks with that status. As a result, organization.onboardingTasks included null entries in the frontend (static/app/components/onboardingWizard/taskConfig.tsx, line 364). These null values were not properly handled downstream, leading to a page crash.
+",src/sentry/models/organizationonboardingtask.py:42,"",
+21b48bed-d902-41d3-b2a7-043665c3c093,codecov,worker,881,60428bf1433628b884a3b218080922b0495fc2cb,https://github.com/codecov/worker/pull/881/files,7,8494,"
+A recent change to default to an empty Report for the Notify Comparison unfortunately broke a different case which now errors because of a non-existant FullCommit.commit.
+",tasks/notify.py:613~614,"",
+996ddd8e-9829-4d58-80e5-13f895359956,codecov,worker,1131,3f844012e8443cfea90ad01906df4ee2b4a02cff,https://github.com/codecov/worker/pull/1131/files,4,17176,"
+Querying the Upload model is too slow with the current implementation. Upload model is one of the largest tables in the database.
+The code is trying to query for uploads with state is not error and is bundle analysis report type and of a given commit ID.
+This required a join with CommitReport model and additionally the filtering on Upload.state and CommitReport.report_type
+are on columns that do not have indexes. This led to a degradation in performance.
+",tasks/upload.py:829~837,"",
+a8db7cf1-8c47-4f64-a256-4f2f9b258d77,codecov,worker,898,bce0d87ff263a7831b3c6a530b0eb89fd448989c,https://github.com/codecov/worker/pull/898/files,1,3509,"
+There was a huge performance hit on the worker service.
+Joining RepositoryFlags reduced the result set significantly by filtering rows early. Without it, the query planner had to scan many more rows in related tables.
+The joined table (RepositoryFlags) have had indexes that enabled faster lookup or filtering. Removing the join meant the planner had fewer index options.
+Post-processing in Python hifted the work from SQL (fast) to Python (slower).
+",tasks/cache_test_rollups.py:150~160,"",
+b6faf052-2332-40c1-941c-418d998be51e,codecov,worker,922,abaf03d44d4db2258d4cc8715088d4ae3c7e4c46,https://github.com/codecov/worker/pull/922/files,1,3778,"
+This is an issue with DB performance from locking. Database locks can be more expensive than Redis locks,
+especially under heavy load. Redis locks are generally faster and more lightweight, which can be beneficial for high-throughput systems.
+",tasks/cache_test_rollups.py:116~136,"",
+c150561c-2e6d-4087-a27e-f7993b47b534,getsentry,seer,2468,cf0828093478b84579115f65e64b44c7da17db8e,https://github.com/getsentry/seer/pull/2468/files,2,8693,"",,"",
+1e7021ea-a2a9-4499-a7e3-2041a4c17bc8,getsentry,seer,2469,1a2ace5bf816541434771f86a579cbcb848ce50c,https://github.com/getsentry/seer/pull/2469/files,1,1443,"",,"",
+36ade162-2569-4c9e-8b2f-953226c475d6,getsentry,seer,2474,60a886afb51132c3bd9c6ece102368a23ef8e186,https://github.com/getsentry/seer/pull/2474/files,6,18805,"",,"",
+31748d0a-4588-4f95-a67f-989d6e561402,getsentry,seer,2475,b1f26708f39d5fc90366df5290e319d5c826359f,https://github.com/getsentry/seer/pull/2475/files,1,1550,"",,"",
+5a02e967-9cb3-4165-b823-4b9c6f2dc4b6,getsentry,seer,2487,f096249614de8660f47e4533ead0ff9745b65344,https://github.com/getsentry/seer/pull/2487/files,2,4367,"",,"",
+927dadb5-aab0-4ecb-8e4b-8b8c32ec2eb7,getsentry,seer,2513,92cdf81e58e5ddac7342f01caa694a29b79d1095,https://github.com/getsentry/seer/pull/2513/files,5,23277,"",,"",
+fe201a74-a302-49a8-a968-db641301ad8f,getsentry,seer,2520,757ac49d6c747fefeef74c590b6ceecf92ed86e9,https://github.com/getsentry/seer/pull/2520/files,2,4432,"",,"",
+b7e0bb36-c23c-4f5f-ac7b-9a34d8ef0fef,getsentry,seer,2455,71e1af06179fff2175835a654a8e234319a99a60,https://github.com/getsentry/seer/pull/2455/files,23,44090,"",,"",
+129bcd9e-641f-4ab1-83f4-7ab198a3c74f,getsentry,seer,2470,ea288212383abd10db3f38ed23865b570a7ec317,https://github.com/getsentry/seer/pull/2470/files,7,8745,"",,"",
+e17aa437-17cf-4835-861b-07fdcacceddd,getsentry,seer,2481,9653b8f87ee0d1db6e16c7a11bad238f1fd27a06,https://github.com/getsentry/seer/pull/2481/files,1,1961,"",,"",
+e83f8ec0-510a-42f1-8da7-67fb4b64cab8,getsentry,seer,2489,b0e7a8414149c012ffea38959b163e853a3bfaee,https://github.com/getsentry/seer/pull/2489/files,1,799,"",,"",
+979d0d08-9f9d-491f-9b3e-6eca2ecd65f2,getsentry,seer,2492,27f87adcb4d56e64db3556d53fa5ea8d7de3cdd3,https://github.com/getsentry/seer/pull/2492/files,8,68744,"",,"",
+8ee85cf9-81d3-471a-b74a-c7e979b4de85,getsentry,seer,2493,3a459a8fdbc1e87010c52dff915534d3dd1e3379,https://github.com/getsentry/seer/pull/2493/files,2,8594,"",,"",
+3848c263-74b3-457c-9136-1eaf537646d2,getsentry,seer,2495,18fa80b3cc94d73d98fc20f56294e09470f31609,https://github.com/getsentry/seer/pull/2495/files,2,2835,"",,"",
+697073f9-066f-499f-b103-84eed353486e,getsentry,seer,2496,84ba1fd9ce0fa5bab8881ff76c4c44649f11e76b,https://github.com/getsentry/seer/pull/2496/files,1,1332,"",,"",
+a034bf67-dcd8-452a-8155-70027ef760dd,getsentry,seer,2498,8024ba1a3703dbb49e424d26ffb68d0e4609345b,https://github.com/getsentry/seer/pull/2498/files,13,38969,"",,"",
+3dc05c54-6dd5-4482-898c-2f2a3a855c2c,getsentry,seer,2504,facb4c6afd04cbb38baa6071c3fb051d442ed74a,https://github.com/getsentry/seer/pull/2504/files,4,12507,"",,"",
+b6398eb3-265f-4ad2-babb-3344e94af81a,getsentry,seer,2512,04c07306d44e1e21fc886c6f6d95e49e46b49a17,https://github.com/getsentry/seer/pull/2512/files,2,2945,"",,"",
+0a1b942a-74a2-4253-9bc5-134fa8b7af2f,getsentry,seer,2512,04c07306d44e1e21fc886c6f6d95e49e46b49a17,https://github.com/getsentry/seer/pull/2512/files,2,2945,"",,"",
+cad2f42a-8a59-430e-b8b4-939a51dbee67,getsentry,seer,2514,14fde152057e96f537b6b366ffa12473bd26e67d,https://github.com/getsentry/seer/pull/2514/files,3,7438,"",,"",
+97b20106-7bd3-4da4-9ce4-b1c93b4d1ec2,getsentry,seer,2515,a2ca0e2c4692b189e35cdf0d8364906b84dabd3a,https://github.com/getsentry/seer/pull/2515/files,4,11864,"",,"",
+5fed5c02-a659-4ad2-a625-400553d54ff2,getsentry,seer,2516,bc4173509fb23ee7d4d23d699c86cd6503c6c05a,https://github.com/getsentry/seer/pull/2516/files,2,6271,"",,"",
+427bed77-6c2f-42e2-9190-0367d9959a3d,getsentry,seer,2519,3b4ba5dccc13bb283598bb6ea042bbd4abf8aa0c,https://github.com/getsentry/seer/pull/2519/files,7,256988,"",,"",
+1917f626-3fa6-42f0-bda6-dd6bf5160093,getsentry,seer,2521,b1d3c82d9042f8e242466f500566eddcbc1773d1,https://github.com/getsentry/seer/pull/2521/files,6,17441,"",,"",
+6113f83a-36b0-4485-a23b-5139e5793551,getsentry,seer,2526,614d099e0552dc800330cb6d4a421fca3d3f1cd2,https://github.com/getsentry/seer/pull/2526/files,2,3547,"",,"",
+03f6a1d8-465a-434d-bd02-5f3aa78d5837,getsentry,seer,2525,34ee1ee32dea57d337548f60f045cee77f400236,https://github.com/getsentry/seer/pull/2525/files,2,2517,"",,"",
+db49d44f-e5ff-4c99-8345-8aea59072340,codecov,overwatch,331,b9a4b7da79d6712786e85f50f2dc3b782a82ae63,https://github.com/codecov/overwatch/pull/331/files,0,9,"",,"",
+150a685c-1e27-4ac8-a98e-e74511577fba,codecov,overwatch,296,b337888df01a43e31984450d71b059c668fe3b5d,https://github.com/codecov/overwatch/pull/296/files,0,9,"",,"",
+4bfe6c9e-495d-413a-bbcf-171e55f7492e,codecov,overwatch,338,05ce4deffbaf3ec463e177d6e037882bbda8931a,https://github.com/codecov/overwatch/pull/338/files,0,9,"",,"",
+a0cfc6b9-c1e5-491c-a143-09e58fc12f26,codecov,overwatch,335,05ce4deffbaf3ec463e177d6e037882bbda8931a,https://github.com/codecov/overwatch/pull/335/files,0,9,"",,"",
+07a5bf38-bd1a-4f8e-b538-803c43d3c991,codecov,overwatch,341,60fcd6ca98b9b739dba680a0741769143e63c8b3,https://github.com/codecov/overwatch/pull/341/files,0,9,"",,"",
+73f21210-3b59-4aae-bce5-376e00656f4f,codecov,gazebo,3799,7c580e25cb8467cf8e6ccccaa1081f9224e04828,https://github.com/codecov/gazebo/pull/3799/files,4,5855,"",,"",
+93b0f9f6-0ccc-4c32-bdd3-2570da6f30e0,codecov,gazebo,3801,dd310af6121c24e792bf39807368b99821ad3706,https://github.com/codecov/gazebo/pull/3801/files,12,18227,"",,"",
+a292be1c-7a26-481c-aaef-c5ae388b3b27,codecov,gazebo,3803,8cbaa7461efb1663f2a6e5e31e3bbf47eb4aedc7,https://github.com/codecov/gazebo/pull/3803/files,3,5528,"",,"",
+8177fe31-4df0-40c9-9486-3218ebb14048,codecov,gazebo,3804,008a93c0d2fa528ae61b2059a6a4e8d677af9990,https://github.com/codecov/gazebo/pull/3804/files,2,12262,"",,"",

@@ -5,15 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // Langfuse API configuration
-const LANGFUSE_BASE_URL = 'https://langfuse.getsentry.net';
-const LANGFUSE_PUBLIC_KEY = process.env.LANGFUSE_PUBLIC_KEY;
-const LANGFUSE_SECRET_KEY = process.env.LANGFUSE_SECRET_KEY;
 
-// Create headers with Basic Auth
-const headers = {
-  'Authorization': 'Basic ' + Buffer.from(`${LANGFUSE_PUBLIC_KEY}:${LANGFUSE_SECRET_KEY}`).toString('base64'),
-  'Content-Type': 'application/json',
-  'Cookie': 'PASTE HERE - pulling from env has some parsing errors I couldnt figure out'
 };
 
 // Create axios instance for Langfuse API
@@ -83,7 +75,55 @@ async function fetchTracesByName(name, limit = 10) {
   }
 }
 
+async function fixDataset() {
+  try {
+    const response = await langfuseApi.get('/api/public/datasets/relevant-warnings-v2');
+    if (response.data.name !== 'relevant-warnings-v2') {
+      throw new Error('Dataset name mismatch: expected relevant-warnings-v2');
+    }
+    const items = response.data.items;
+    for (const item of items) {
+      if (!item.expectedOutput) {
+        continue;
+      }
+
+      const newOutput = {
+        expected_bugs: [{
+          repos: item.expectedOutput.repos,
+          description: item.expectedOutput.description,
+          encoded_location: item.expectedOutput.encoded_location
+        }]
+      }
+
+
+      if (item && item.id !== 'cmb03ob6t00fcietns5txv1fd' && item.id !== 'cmb03ob9200feietnjly2aje9') {
+        try {
+          const updateResponse = await langfuseApi.post('/api/trpc/datasets.updateDatasetItem', {
+            json: {
+              projectId: "clws5ue5q00006gkjq1d9c7l5",
+              datasetId: item.datasetId,
+              datasetItemId: item.id,
+              input: JSON.stringify(item.input),
+              expectedOutput: JSON.stringify(newOutput),
+              metadata: "",
+            }
+          });
+          console.log(`Updated item ${item.id}`);
+        } catch (error) {
+          console.error(`Error updating item ${item.id}:`, error.message);
+          throw error;
+        }
+      }
+
+    }
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching datasets:', error.message);
+    throw error;
+  }
+}
+
 export {
-  createTrace, fetchTraces, fetchTracesByName, getTraceById, logGeneration
+  createTrace, fetchTraces, fetchTracesByName, fixDataset, getTraceById, logGeneration
 };
 

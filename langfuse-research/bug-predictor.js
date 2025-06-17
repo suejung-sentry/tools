@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { fetchTracesByName, getTraceById } from './langfuse.js';
+import { fetchTracesByName, getDatasetItems } from './langfuse.js';
 
 export async function analyzeBugPredictor() {
   try {
@@ -13,7 +13,152 @@ export async function analyzeBugPredictor() {
     }
     
     console.log(`Fetched ${tracesResult.data.length} traces with "Codegen - Bug Prediction Step" in the name`);
+
+    // Create directory for trace details if it doesn't exist
+    const traceDetailsDir = './results/trace-details';
+    if (!fs.existsSync(traceDetailsDir)) {
+      fs.mkdirSync(traceDetailsDir, { recursive: true });
+    }
+
+    // // Write trace details to separate files in the directory
+    // for (const trace of tracesResult.data) {
+    //   const traceDetails = await getTraceById(trace.id);
+    //   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    //   fs.writeFileSync(
+    //     `${traceDetailsDir}/trace-${trace.id}-${timestamp}.json`, 
+    //     JSON.stringify(traceDetails, null, 2)
+    //   );
+    //   console.log(`Trace details saved for ${trace.id}`);
+    // }
+
+    await writeDatasetItems();
+
+    // Load trace details from files
+    const traceDetails = [];
+    const traceFiles = fs.readdirSync(traceDetailsDir);
+    for (const file of traceFiles) {
+      if (file.endsWith('.json')) {
+        const filePath = `${traceDetailsDir}/${file}`;
+        const traceData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        traceDetails.push(traceData);
+      }
+    }
+    console.log(`Loaded ${traceDetails.length} trace details from files`);
+
+    // Do analysis
+    // await analyzeAndWriteToolCalls(traceDetails);
+    // console.log('Analyze and Write Tool Calls complete');
+
+    await findDropoffPoints(traceDetails);
+
+  } catch (error) {
+    console.error('Error analyzing bug predictor:', error);
+  }
+}
+
+async function writeDatasetItems() {
+    const datasetDir = './results/dataset-items';
+    if (!fs.existsSync(datasetDir)) {
+      fs.mkdirSync(datasetDir, { recursive: true });
+    }
+      // Call Langfuse API to create dataset item
+      try {
+        const response = await getDatasetItems();
+        console.log(`Fetched ${response.data.length} dataset items`);
+        
+        for (const item of response.data) {
+          console.log(`Writing dataset item:`, item.id);
+          fs.writeFileSync(
+            `${datasetDir}/${item.id}.json`,
+            JSON.stringify(item, null, 2)
+          );
+        }
+      } catch (error) {
+        console.error(`Failed to fetch dataset items:`, error.message);
+      }
+
+}
+
+async function getDatasetItemsMap() {
     
+}
+
+async function findDropoffPoints(traceDetails) {
+    console.log('Finding dropoff points');
+
+    let inputCount = 0;
+    let outputCount = 0;
+    let mismatchCount = 0;
+    let matchCount = 0;
+    let subdetails = [];
+
+    for (const trace of traceDetails) {
+        const formatterStep = trace.observations?.find(obs => 
+            obs.name === "Codegen - Bug Prediction - Formatter Component"
+        );
+
+        if (formatterStep) {
+            const inputLength = formatterStep.input?.args?.[0]?.located_followups?.length || formatterStep.input?.kwargs?.request?.followups?.length || 0;
+            const outputLength = formatterStep.output?.bug_predictions?.length || 0;
+
+            inputCount += inputLength;
+            outputCount += outputLength;
+
+            if (inputLength !== outputLength) {
+                mismatchCount++;
+
+            } else {
+                matchCount++;
+            }
+
+            subdetails.push({
+                repo: trace.metadata?.repo?.name,
+                pr_id: trace.tags?.find(tag => tag.startsWith('pr_id:'))?.split(':')[1],
+                traceId: trace.id,
+                inputLength,
+                outputLength,
+                difference: inputLength - outputLength
+            });
+        }
+    }
+
+    // Prepare analysis results
+    const analysisResults = {
+        summary: {
+            totalInputItems: inputCount,
+            totalOutputItems: outputCount,
+            matchCount,
+            mismatchCount
+        },
+        mismatchDetails: subdetails.sort((a, b) => a.inputLength - b.inputLength)
+    };
+
+    // Log to console
+    console.log('\nFormatter Component Analysis:');
+    console.log(`Total items in input arrays: ${inputCount}`);
+    console.log(`Total items in output arrays: ${outputCount}`);
+    console.log(`Number of matches: ${matchCount}`);
+    console.log(`Number of mismatches: ${mismatchCount}`);
+    
+    if (mismatchCount > 0) {
+        console.log('\nMismatch Details:');
+        subdetails.forEach(detail => {
+            if (detail.difference >= 0) {
+                console.log(`Trace ${detail.traceId} (${detail.repo}): Input ${detail.inputLength} -> Output ${detail.outputLength} (Diff: ${detail.difference})`);
+            }
+        });
+    }
+
+    // Write results to file
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const outputPath = `./results/bug-predictor-dropoff-analysis-${timestamp}.json`;
+    fs.writeFileSync(outputPath, JSON.stringify(analysisResults, null, 2));
+    console.log(`\nAnalysis results written to: ${outputPath}`);
+}
+
+
+async function analyzeAndWriteToolCalls(traceDetailsList) {
+  try {
     // Track traces with tool calls
     const tracesWithToolCalls = [];
     // Track tool usage counts
@@ -21,11 +166,9 @@ export async function analyzeBugPredictor() {
     // Track tool result counts
     const toolResultCounts = {};
     
-    for (const trace of tracesResult.data) {
-      const traceDetails = await getTraceById(trace.id);
-
+    for (const traceDetails of traceDetailsList) {
       if (!traceDetails.observations || traceDetails.observations.length === 0) {
-        console.log(`No observations found for trace ${trace.id}`);
+        console.log(`No observations found for trace ${traceDetails.id}`);
         continue;
       }
 
@@ -111,11 +254,11 @@ export async function analyzeBugPredictor() {
         tracesWithToolCalls.push({
           repoName,
           orgName,
-          traceId: trace.id,
-          name: trace.name,
-          timestamp: trace.timestamp,
+          traceId: traceDetails.id,
+          name: traceDetails.name,
+          timestamp: traceDetails.timestamp,
           toolCalls: toolCalls,
-          url: `https://langfuse.getsentry.net/project/clx9kma1k0001iebwrfw4oo0z/traces/${trace.id}`
+          url: `https://langfuse.getsentry.net/project/clx9kma1k0001iebwrfw4oo0z/traces/${traceDetails.id}`
         });
       }
     }
@@ -140,7 +283,7 @@ export async function analyzeBugPredictor() {
       });
       
       // Save results to a file
-      const nameLower = name.toLowerCase().replace(/\s+/g, '-');
+      const nameLower = "bug-predictor";
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
       fs.writeFileSync(`./results/${nameLower}-tool-calls-${timestamp}.json`, JSON.stringify(tracesWithToolCalls, null, 2));
       console.log(`Results saved to ${nameLower}-tool-calls-${timestamp}.json`);

@@ -73,8 +73,16 @@ async function fetchTracesByName(name, limit = 10) {
   }
 }
 
-<<<<<<< Updated upstream
-=======
+export async function getDatasetItems() {
+  try {
+    const response = await langfuseApi.get('/api/public/dataset-items?datasetName=relevant-warnings');
+    return response.data;
+  } catch (error) {
+    console.error('Error getting dataset items:', error.message);
+    throw error;
+  }
+}
+
 async function fixDataset() {
 
 
@@ -148,7 +156,6 @@ async function fixDataset() {
     return results;
 }
 
->>>>>>> Stashed changes
 export {
   createTrace, fetchTraces, fetchTracesByName, getTraceById, logGeneration
 };

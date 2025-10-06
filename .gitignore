@@ -2,3 +2,5 @@
 node_modules
 results
 .DS_Store
+
+*.pem
